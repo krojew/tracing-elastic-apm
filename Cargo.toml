@@ -1,0 +1,16 @@
+[package]
+name = "tracing-elastic-apm"
+version = "1.0.0"
+authors = ["Kamil Rojewski <kamil.rojewski@gmail.com>"]
+edition = "2018"
+
+[dependencies]
+fxhash = "0.2"
+rand = "0.7"
+reqwest = "0.10"
+serde = "1.0"
+serde_json = "1.0"
+tokio = { version = "0.3", features = ["rt"] }
+tokio-compat-02 = "0.1"
+tracing = "0.1"
+tracing-distributed = "0.2"
