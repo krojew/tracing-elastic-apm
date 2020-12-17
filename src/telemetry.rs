@@ -13,7 +13,7 @@ pub struct SpanId {
 
 impl SpanId {
     #[inline]
-    pub fn new(tracing_id: Id, instance_id: u64) -> Self {
+    pub(crate) fn new(tracing_id: Id, instance_id: u64) -> Self {
         SpanId {
             tracing_id,
             instance_id,
@@ -27,9 +27,9 @@ pub struct ApmTelemetry {
 }
 
 impl ApmTelemetry {
-    pub fn new(config: Config) -> Self {
+    pub(crate) fn new(config: Config) -> Self {
         ApmTelemetry {
-            client: ApmClient::new(config.apm_address, config.secret_token),
+            client: ApmClient::new(config.apm_address, config.authorization),
         }
     }
 }

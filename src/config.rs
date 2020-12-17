@@ -29,10 +29,27 @@ impl Service {
     }
 }
 
+pub struct ApiKey {
+    pub(crate) id: String,
+    pub(crate) key: String,
+}
+
+impl ApiKey {
+    pub fn new(id: String, key: String) -> Self {
+        ApiKey { id, key }
+    }
+}
+
+// APM authorization method.
+pub enum Authorization {
+    SecretToken(String),
+    ApiKey(ApiKey),
+}
+
 #[derive(Default)]
 pub struct Config {
     pub(crate) apm_address: String,
-    pub(crate) secret_token: Option<String>,
+    pub(crate) authorization: Option<Authorization>,
     pub(crate) service: Option<Service>,
     pub(crate) process: Option<Process>,
     pub(crate) system: Option<System>,
@@ -46,6 +63,11 @@ impl Config {
             apm_address,
             ..Default::default()
         }
+    }
+
+    pub fn with_authorization(mut self, authorization: Authorization) -> Self {
+        self.authorization = Some(authorization);
+        self
     }
 
     pub fn with_service(mut self, service: Service) -> Self {
