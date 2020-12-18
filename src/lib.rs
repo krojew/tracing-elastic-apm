@@ -18,7 +18,9 @@ pub fn new_layer(
     config: Config,
 ) -> TelemetryLayer<ApmTelemetry, SpanId, TraceId> {
     let instance_id = thread_rng().gen();
-    TelemetryLayer::new(service_name, ApmTelemetry::new(config), move |tracing_id| {
-        SpanId::new(tracing_id, instance_id)
-    })
+    TelemetryLayer::new(
+        service_name,
+        ApmTelemetry::new(config, service_name.into()),
+        move |tracing_id| SpanId::new(tracing_id, instance_id),
+    )
 }

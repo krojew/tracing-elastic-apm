@@ -7,7 +7,7 @@ use tracing::field::{Field, Visit};
 
 /// Visitor that builds APM-compatible values from tracing fields.
 #[derive(Default)]
-pub struct ApmVisitor(FxHashMap<String, Value>);
+pub struct ApmVisitor(pub(crate) FxHashMap<String, Value>);
 
 impl Visit for ApmVisitor {
     fn record_i64(&mut self, field: &Field, value: i64) {

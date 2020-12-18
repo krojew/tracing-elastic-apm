@@ -1,12 +1,12 @@
 use crate::model::{Cloud, Framework, Language, Process, Runtime, ServiceNode, System, User};
 
 pub struct Service {
-    version: Option<String>,
-    environment: Option<String>,
-    language: Option<Language>,
-    runtime: Option<Runtime>,
-    framework: Option<Framework>,
-    node: Option<ServiceNode>,
+    pub(crate) version: Option<String>,
+    pub(crate) environment: Option<String>,
+    pub(crate) language: Option<Language>,
+    pub(crate) runtime: Option<Runtime>,
+    pub(crate) framework: Option<Framework>,
+    pub(crate) node: Option<ServiceNode>,
 }
 
 impl Service {

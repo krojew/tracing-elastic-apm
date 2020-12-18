@@ -5,6 +5,7 @@ authors = ["Kamil Rojewski <kamil.rojewski@gmail.com>"]
 edition = "2018"
 
 [dependencies]
+base64 = "0.13"
 fxhash = "0.2"
 rand = "0.7"
 reqwest = "0.10"
@@ -14,3 +15,4 @@ tokio = { version = "0.3", features = ["rt"] }
 tokio-compat-02 = "0.1"
 tracing = "0.1"
 tracing-distributed = "0.2"
+version = "3.0"
