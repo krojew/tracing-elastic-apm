@@ -3,6 +3,13 @@ name = "tracing-elastic-apm"
 version = "1.0.0"
 authors = ["Kamil Rojewski <kamil.rojewski@gmail.com>"]
 edition = "2018"
+description = "Elasting APM intake API tracing layer."
+documentation = "https://docs.rs/tracing-elastic-apm"
+homepage = "https://github.com/krojew/tracing-elastic-apm"
+repository = "https://github.com/krojew/tracing-elastic-apm"
+readme = "./README.md"
+keywords = ["tracing", "elastic", "apm", "telemetry"]
+license = "MIT/Apache-2.0"
 
 [dependencies]
 base64 = "0.13"
