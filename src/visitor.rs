@@ -5,9 +5,8 @@ use serde::Serialize;
 use serde_json::{json, Value};
 use tracing::field::{Field, Visit};
 
-/// Visitor that builds APM-compatible values from tracing fields.
 #[derive(Default)]
-pub struct ApmVisitor(pub(crate) FxHashMap<String, Value>);
+pub(crate) struct ApmVisitor(pub(crate) FxHashMap<String, Value>);
 
 impl Visit for ApmVisitor {
     fn record_i64(&mut self, field: &Field, value: i64) {

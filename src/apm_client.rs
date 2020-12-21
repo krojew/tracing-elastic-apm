@@ -5,7 +5,8 @@ use std::{
 };
 
 use reqwest::{header, Client};
-use serde_json::Value;
+use serde_json::{json, Value};
+use tokio_compat_02::FutureExt;
 use tracing::*;
 
 use crate::config::Authorization;
@@ -19,18 +20,18 @@ pub(crate) struct Batch {
 
 impl Display for Batch {
     fn fmt(&self, f: &mut Formatter<'_>) -> Result {
-        writeln!(f, "{}", self.metadata)?;
+        writeln!(f, "{}", json!({ "metadata": self.metadata }))?;
 
         if let Some(transaction) = &self.transaction {
-            writeln!(f, "{}", transaction)?;
+            writeln!(f, "{}", json!({ "transaction": transaction }))?;
         }
 
         if let Some(span) = &self.span {
-            writeln!(f, "{}", span)?;
+            writeln!(f, "{}", json!({ "span": span }))?;
         }
 
         if let Some(error) = &self.error {
-            writeln!(f, "{}", error)?;
+            writeln!(f, "{}", json!({ "error": error }))?;
         }
 
         Ok(())
@@ -85,13 +86,17 @@ impl ApmClient {
         tokio::spawn(async move {
             let mut request = client
                 .post(&format!("{}/intake/v2/events", apm_address))
+                .header(
+                    header::CONTENT_TYPE,
+                    header::HeaderValue::from_static("application/x-ndjson"),
+                )
                 .body(batch.to_string());
 
             if let Some(authorization) = &authorization {
                 request = request.header(header::AUTHORIZATION, authorization.deref());
             }
 
-            let result = request.send().await;
+            let result = request.send().compat().await;
             if let Err(error) = result {
                 error!(error = %error, "Error sending batch to APM!");
             }

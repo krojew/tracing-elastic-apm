@@ -14,5 +14,5 @@ serde_json = "1.0"
 tokio = { version = "0.3", features = ["rt"] }
 tokio-compat-02 = "0.1"
 tracing = "0.1"
-tracing-distributed = "0.2"
+tracing-subscriber = "0.2"
 version = "3.0"
