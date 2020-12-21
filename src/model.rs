@@ -1,3 +1,5 @@
+//! APM data model.
+
 use fxhash::FxHashMap;
 use serde::Serialize;
 use serde_json::Value;

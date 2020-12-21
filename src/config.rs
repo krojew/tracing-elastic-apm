@@ -1,3 +1,5 @@
+//! Layer configuration.
+
 use crate::model::{Cloud, Framework, Language, Process, Runtime, ServiceNode, System, User};
 
 pub struct Service {
