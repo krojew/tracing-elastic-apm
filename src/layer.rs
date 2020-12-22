@@ -1,4 +1,4 @@
-use std::time::{SystemTime, UNIX_EPOCH};
+use std::time::{Duration, Instant, SystemTime, UNIX_EPOCH};
 
 use rand::prelude::*;
 use serde_json::{json, Value};
@@ -20,6 +20,11 @@ struct TraceContext {
     pub trace_id: u64,
 }
 
+struct SpanContext {
+    pub duration: Duration,
+    pub last_timestamp: Instant,
+}
+
 /// Telemetry capability that publishes events and spans to Elastic APM.
 pub struct ApmLayer {
     client: ApmClient,
@@ -31,7 +36,11 @@ where
     S: Subscriber + for<'lookup> LookupSpan<'lookup>,
 {
     fn new_span(&self, attrs: &Attributes<'_>, id: &Id, ctx: Context<'_, S>) {
-        let timestamp = Self::get_current_timestamp();
+        let now = SystemTime::now()
+            .duration_since(UNIX_EPOCH)
+            .unwrap()
+            .as_micros() as u64;
+        let timestamp = Instant::now();
 
         let span = ctx.span(id).expect("Span not found, this is a bug");
         let mut extensions = span.extensions_mut();
@@ -40,6 +49,10 @@ where
         attrs.record(&mut visitor);
 
         extensions.insert(visitor);
+        extensions.insert(SpanContext {
+            duration: Duration::new(0, 0),
+            last_timestamp: timestamp,
+        });
 
         let name = span.name().to_string();
 
@@ -54,7 +67,7 @@ where
                 id: id.into_u64().to_string(),
                 trace_id: trace_ctx.trace_id.to_string(),
                 parent_id: parent_id.into_u64().to_string(),
-                timestamp: Some(timestamp),
+                timestamp: Some(now),
                 name,
                 span_type: "custom".to_string(),
                 ..Default::default()
@@ -71,7 +84,7 @@ where
                 id: id.into_u64().to_string(),
                 transaction_type: "custom".to_string(),
                 trace_id: trace_ctx.trace_id.to_string(),
-                timestamp: Some(timestamp),
+                timestamp: Some(now),
                 name: Some(name),
                 ..Default::default()
             };
@@ -144,26 +157,47 @@ where
         }
     }
 
-    fn on_close(&self, id: Id, ctx: Context<'_, S>) {
-        let timestamp = Self::get_current_timestamp();
+    fn on_enter(&self, id: &Id, ctx: Context<'_, S>) {
+        let span = ctx.span(id).expect("Span not found!");
+        let mut extensions = span.extensions_mut();
 
+        let span_ctx = extensions
+            .get_mut::<SpanContext>()
+            .expect("Span context not found!");
+
+        span_ctx.last_timestamp = Instant::now();
+    }
+
+    fn on_exit(&self, id: &Id, ctx: Context<'_, S>) {
+        let timestamp = Instant::now();
+        let span = ctx.span(id).expect("Span not found!");
+        let mut extensions = span.extensions_mut();
+
+        let span_ctx = extensions
+            .get_mut::<SpanContext>()
+            .expect("Span context not found!");
+
+        span_ctx.duration += timestamp - span_ctx.last_timestamp;
+    }
+
+    fn on_close(&self, id: Id, ctx: Context<'_, S>) {
         let span = ctx.span(&id).expect("Span not found!");
         let mut extensions = span.extensions_mut();
         let visitor = extensions
             .remove::<ApmVisitor>()
             .expect("Visitor not found!");
+        let span_ctx = extensions
+            .remove::<SpanContext>()
+            .expect("Span context not found!");
 
         let metadata = self.create_metadata(&visitor, span.metadata());
+        let duration = span_ctx.duration.as_micros() as f32 / 1000.;
 
         let batch = if let Some(mut span) = extensions.remove::<Span>() {
-            span.duration =
-                (timestamp - span.timestamp.expect("Missing timestamp!")) as f32 / 1000.;
-
+            span.duration = duration;
             Batch::new(metadata, None, Some(json!(span)), None)
         } else if let Some(mut transaction) = extensions.remove::<Transaction>() {
-            transaction.duration =
-                (timestamp - transaction.timestamp.expect("Missing timestamp!")) as f32 / 1000.;
-
+            transaction.duration = duration;
             Batch::new(metadata, Some(json!(transaction)), None, None)
         } else {
             return;
@@ -235,12 +269,5 @@ impl ApmLayer {
         }
 
         metadata
-    }
-
-    fn get_current_timestamp() -> u64 {
-        SystemTime::now()
-            .duration_since(UNIX_EPOCH)
-            .unwrap()
-            .as_micros() as u64
     }
 }
