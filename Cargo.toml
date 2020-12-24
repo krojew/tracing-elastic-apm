@@ -9,7 +9,7 @@ homepage = "https://github.com/krojew/tracing-elastic-apm"
 repository = "https://github.com/krojew/tracing-elastic-apm"
 readme = "./README.md"
 keywords = ["tracing", "elastic", "apm", "telemetry"]
-license = "MIT/Apache-2.0"
+license = "MIT"
 
 [dependencies]
 base64 = "0.13"

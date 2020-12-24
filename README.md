@@ -31,3 +31,9 @@ tracing_subscriber::registry()
 ```
 
 Take a look at `Config` for more configuration options.
+
+## Async and time measurements
+
+APM doesn't support the notion of idle time and only tracks actual span durations. Async code naturally interleaves
+spans at await points, which means span start time + duration might be lower than actual span end time as measured by a
+wall clock. That in turn means child spans in APM might sometimes start after the parent span start time + duration.
