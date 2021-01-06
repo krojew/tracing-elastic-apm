@@ -3,7 +3,7 @@
 [![crates.io version](https://img.shields.io/crates/v/tracing-elastic-apm.svg)](https://crates.io/crates/tracing-elastic-apm)
 [![Documentation (latest release)](https://docs.rs/tracing-elastic-apm/badge.svg)](https://docs.rs/tracing-elastic-apm/)
 
-[Elastic APM](https://www.elastic.co/guide/en/apm/get-started/7.10/index.html) tracing layer. Uses the native ingest API.
+[Elastic APM](https://www.elastic.co/apm) tracing layer. Uses the native ingest API.
 
 ## Usage
 

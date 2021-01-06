@@ -6,7 +6,6 @@ use std::{
 
 use reqwest::{header, Client};
 use serde_json::{json, Value};
-use tokio_compat_02::FutureExt;
 use tracing::*;
 
 use crate::config::Authorization;
@@ -96,7 +95,7 @@ impl ApmClient {
                 request = request.header(header::AUTHORIZATION, authorization.deref());
             }
 
-            let result = request.send().compat().await;
+            let result = request.send().await;
             if let Err(error) = result {
                 error!(error = %error, "Error sending batch to APM!");
             }
