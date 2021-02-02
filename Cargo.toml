@@ -1,6 +1,6 @@
 [package]
 name = "tracing-elastic-apm"
-version = "2.0.0"
+version = "2.0.1"
 authors = ["Kamil Rojewski <kamil.rojewski@gmail.com>"]
 edition = "2018"
 description = "Elasting APM intake API tracing layer."
