@@ -17,7 +17,7 @@ Create a new tracing Layer:
 
 ```rust
 let layer = tracing_elastic_apm::new_layer(
-    "ServiceName".to_string(), 
+    "ServiceName".to_string(),
     tracing_elastic_apm::Config::new("APM address".to_string())
 );
 ```
@@ -31,6 +31,14 @@ tracing_subscriber::registry()
 ```
 
 Take a look at `Config` for more configuration options.
+
+## Supported feature flags
+
+- `default-tls` _(enabled by default)_ - use default TLS backend.
+- `rustls-tls` - use Rustls TLS backend.
+
+Please see corresponding flags in the `reqwest` library for more information:
+[https://docs.rs/reqwest/0.11.2/reqwest/#optional-features](https://docs.rs/reqwest/0.11.2/reqwest/#optional-features)
 
 ## Async and time measurements
 
