@@ -68,7 +68,7 @@ impl Config {
         }
     }
 
-    pub fn verify_certs(mut self, verify: bool) -> Self {
+    pub fn allow_invalid_certificates(mut self, verify: bool) -> Self {
         self.allow_invalid_certs = Some(verify);
         self
     }
