@@ -60,7 +60,11 @@ pub(crate) struct ApmClient {
 }
 
 impl ApmClient {
-    pub fn new(apm_address: String, authorization: Option<Authorization>) -> Self {
+    pub fn new(
+        apm_address: String,
+        authorization: Option<Authorization>,
+        allow_invalid_certs: bool,
+    ) -> Self {
         let authorization = authorization
             .map(|authorization| match authorization {
                 Authorization::SecretToken(token) => format!("Bearer {}", token),
@@ -69,11 +73,16 @@ impl ApmClient {
                 }
             })
             .map(Arc::new);
-
+        let client = if allow_invalid_certs {
+            let builder = reqwest::ClientBuilder::new().danger_accept_invalid_certs(true);
+            builder.build().unwrap()
+        } else {
+            Client::new()
+        };
         ApmClient {
             apm_address: Arc::new(apm_address),
             authorization,
-            client: Client::new(),
+            client,
         }
     }
 
