@@ -75,11 +75,6 @@ impl ApmClient {
             .map(Arc::new);
         let client = if allow_invalid_certs {
             let builder = reqwest::ClientBuilder::new().danger_accept_invalid_certs(true);
-
-            #[cfg(feature = "native-tls")]
-            #[cfg_attr(docsrs, doc(cfg(feature = "native-tls")))]
-            buidler.danger_accept_invalid_hostnames(true);
-
             builder.build().unwrap()
         } else {
             Client::new()
