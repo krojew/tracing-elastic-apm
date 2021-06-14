@@ -57,7 +57,7 @@ pub struct Config {
     pub(crate) system: Option<System>,
     pub(crate) user: Option<User>,
     pub(crate) cloud: Option<Cloud>,
-    pub(crate) allow_invalid_certs: Option<bool>,
+    pub(crate) allow_invalid_certs: bool,
 }
 
 impl Config {
@@ -69,7 +69,7 @@ impl Config {
     }
 
     pub fn allow_invalid_certificates(mut self, verify: bool) -> Self {
-        self.allow_invalid_certs = Some(verify);
+        self.allow_invalid_certs = verify;
         self
     }
 

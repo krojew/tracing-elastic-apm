@@ -80,7 +80,7 @@ impl ApmClient {
             #[cfg_attr(docsrs, doc(cfg(feature = "native-tls")))]
             buidler.danger_accept_invalid_hostnames(true);
 
-            builder.build().unwrap_or(Client::new())
+            builder.build().unwrap()
         } else {
             Client::new()
         };

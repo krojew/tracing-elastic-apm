@@ -253,7 +253,7 @@ impl ApmLayer {
             client: ApmClient::new(
                 config.apm_address,
                 config.authorization,
-                config.allow_invalid_certs.unwrap_or(false),
+                config.allow_invalid_certs,
             ),
             metadata: json!(metadata),
         }
