@@ -1,5 +1,9 @@
 # Changelog
 
+## [2.2.0]
+
+- Added possibility to allow invalid certificates.
+
 ## [2.1.0]
 
 - Added `default-tls` and `rustls-tls` features.
