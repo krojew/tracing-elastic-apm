@@ -254,6 +254,7 @@ impl ApmLayer {
                 config.apm_address,
                 config.authorization,
                 config.allow_invalid_certs,
+                config.root_cert_path,
             ),
             metadata: json!(metadata),
         }

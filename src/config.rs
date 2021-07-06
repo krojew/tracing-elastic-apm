@@ -58,6 +58,7 @@ pub struct Config {
     pub(crate) user: Option<User>,
     pub(crate) cloud: Option<Cloud>,
     pub(crate) allow_invalid_certs: bool,
+    pub(crate) root_cert_path: Option<String>,
 }
 
 impl Config {
@@ -70,6 +71,11 @@ impl Config {
 
     pub fn allow_invalid_certificates(mut self, verify: bool) -> Self {
         self.allow_invalid_certs = verify;
+        self
+    }
+
+    pub fn with_root_cert_path(mut self, cert_path: String) -> Self {
+        self.root_cert_path = Some(cert_path);
         self
     }
 
