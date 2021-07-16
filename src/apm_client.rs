@@ -4,6 +4,7 @@ use std::{
     sync::Arc,
 };
 
+use anyhow::Result as AnyResult;
 use std::io::Read;
 use reqwest::{header, Client};
 use serde_json::{json, Value};
@@ -66,7 +67,7 @@ impl ApmClient {
         authorization: Option<Authorization>,
         allow_invalid_certs: bool,
         root_cert_path: Option<String>
-    ) -> Self {
+    ) -> AnyResult<Self> {
         let authorization = authorization
             .map(|authorization| match authorization {
                 Authorization::SecretToken(token) => format!("Bearer {}", token),
@@ -82,18 +83,18 @@ impl ApmClient {
         }
         if let Some(path) = root_cert_path {
             let mut buff = Vec::new();
-            std::fs::File::open(&path).unwrap()
-                  .read_to_end(&mut buff).unwrap();
-            let cert = reqwest::Certificate::from_pem(&buff).unwrap();
+            std::fs::File::open(&path)?
+                  .read_to_end(&mut buff)?;
+            let cert = reqwest::Certificate::from_pem(&buff)?;
             client_builder = client_builder.add_root_certificate(cert);
         }
 
-        let client = client_builder.build().unwrap();
-        ApmClient {
+        let client = client_builder.build()?;
+        Ok(ApmClient {
             apm_address: Arc::new(apm_address),
             authorization,
             client,
-        }
+        })
     }
 
     pub fn send_batch(&self, batch: Batch) {
