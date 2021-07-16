@@ -1,5 +1,7 @@
 use std::time::{Duration, Instant, SystemTime, UNIX_EPOCH};
 
+
+use anyhow::Result as AnyResult;
 use rand::prelude::*;
 use serde_json::{json, Value};
 use tracing::{
@@ -208,7 +210,7 @@ where
 }
 
 impl ApmLayer {
-    pub(crate) fn new(mut config: Config, service_name: String) -> Self {
+    pub(crate) fn new(mut config: Config, service_name: String) -> AnyResult<Self> {
         let metadata = Metadata {
             service: Service {
                 name: service_name,
@@ -249,14 +251,15 @@ impl ApmLayer {
             labels: None,
         };
 
-        ApmLayer {
+        Ok(ApmLayer {
             client: ApmClient::new(
                 config.apm_address,
                 config.authorization,
                 config.allow_invalid_certs,
-            ),
+                config.root_cert_path,
+            )?,
             metadata: json!(metadata),
-        }
+        })
     }
 
     fn create_metadata(
