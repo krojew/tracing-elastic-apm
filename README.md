@@ -20,7 +20,7 @@ let layer = tracing_elastic_apm::new_layer(
     "ServiceName".to_string(),
     // remember to use desired protocol below, e.g. http://
     tracing_elastic_apm::Config::new("APM address".to_string())
-);
+)?;
 ```
 
 Register the layer:
