@@ -69,7 +69,10 @@ impl ApmClient {
             .map(|authorization| match authorization {
                 Authorization::SecretToken(token) => format!("Bearer {}", token),
                 Authorization::ApiKey(key) => {
-                    base64::encode(format!("ApiKey {}:{}", key.id, key.key))
+                    format!(
+                        "ApiKey {}",
+                        base64::encode(format!("{}:{}", key.id, key.key))
+                    )
                 }
             })
             .map(Arc::new);
