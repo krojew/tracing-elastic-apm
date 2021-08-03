@@ -7,12 +7,6 @@
 
 ## Usage
 
-Add the crate to your Cargo.toml file:
-
-```toml
-tracing-elastic-apm = "desired version"
-```
-
 Create a new tracing Layer:
 
 ```rust

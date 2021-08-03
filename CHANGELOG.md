@@ -1,10 +1,22 @@
 # Changelog
 
+## [3.0.0]
+
+### New
+
+- Added possibility to specify root CA path.
+
+### Fixed
+
+- Fixed sending invalid api key to APM.
+
 ## [2.2.0]
 
 - Added possibility to allow invalid certificates.
 
 ## [2.1.0]
+
+### New
 
 - Added `default-tls` and `rustls-tls` features.
 
