@@ -2,6 +2,9 @@
 
 use crate::model::{Cloud, Framework, Language, Process, Runtime, ServiceNode, System, User};
 
+/// Name for the trace id field, if one needs to be supplied manually.
+pub const TRACE_ID_FIELD_NAME: &str = "trace_id";
+
 pub struct Service {
     pub(crate) version: Option<String>,
     pub(crate) environment: Option<String>,
@@ -42,7 +45,7 @@ impl ApiKey {
     }
 }
 
-// APM authorization method.
+/// APM authorization method.
 pub enum Authorization {
     SecretToken(String),
     ApiKey(ApiKey),

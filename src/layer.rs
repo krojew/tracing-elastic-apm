@@ -1,6 +1,5 @@
 use std::time::{Duration, Instant, SystemTime, UNIX_EPOCH};
 
-
 use anyhow::Result as AnyResult;
 use rand::prelude::*;
 use serde_json::{json, Value};
@@ -14,7 +13,7 @@ use crate::{
     apm_client::{ApmClient, Batch},
     config::Config,
     model::{Agent, Error, Log, Metadata, Service, Span, Transaction},
-    visitor::ApmVisitor,
+    visitor::{ApmVisitor, TraceIdVisitor},
 };
 
 #[derive(Copy, Clone)]
@@ -78,8 +77,11 @@ where
             extensions.insert(new_span);
             extensions.insert(*trace_ctx);
         } else {
+            let mut visitor = TraceIdVisitor::default();
+            attrs.record(&mut visitor);
+
             let trace_ctx = TraceContext {
-                trace_id: thread_rng().gen(),
+                trace_id: visitor.0.unwrap_or_else(|| thread_rng().gen()),
             };
 
             let new_transaction = Transaction {
