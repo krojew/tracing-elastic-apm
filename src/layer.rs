@@ -7,7 +7,7 @@ use tracing::{
     span::{Attributes, Record},
     Event, Id, Level, Subscriber,
 };
-use tracing_subscriber::{layer::Context, registry::LookupSpan, Layer};
+use tracing_subscriber::{Layer, layer::Context, registry::LookupSpan};
 
 use crate::{
     apm_client::{ApmClient, Batch},
@@ -57,8 +57,8 @@ where
 
         let name = span.name().to_string();
 
-        if let Some(parent_id) = span.parent_id() {
-            let parent_span = ctx.span(parent_id).expect("Span parent not found!");
+        if let Some(parent_id) = span.parent().map(|span_ref| span_ref.id()) {
+            let parent_span = ctx.span(&parent_id).expect("Span parent not found!");
             let parent_extensions = parent_span.extensions();
             let trace_ctx = parent_extensions
                 .get::<TraceContext>()
