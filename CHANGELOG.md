@@ -1,6 +1,6 @@
 # Changelog
 
-## [x.y.z]
+## [3.1.0]
 
 - Added support for specifying custom trace id to new spans via `config::TRACE_ID_FIELD_NAME` field.
 
