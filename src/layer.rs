@@ -7,7 +7,7 @@ use tracing::{
     span::{Attributes, Record},
     Event, Id, Level, Subscriber,
 };
-use tracing_subscriber::{Layer, layer::Context, registry::LookupSpan};
+use tracing_subscriber::{layer::Context, registry::LookupSpan, Layer};
 
 use crate::{
     apm_client::{ApmClient, Batch},
@@ -36,7 +36,7 @@ impl<S> Layer<S> for ApmLayer
 where
     S: Subscriber + for<'lookup> LookupSpan<'lookup>,
 {
-    fn new_span(&self, attrs: &Attributes<'_>, id: &Id, ctx: Context<'_, S>) {
+    fn on_new_span(&self, attrs: &Attributes<'_>, id: &Id, ctx: Context<'_, S>) {
         let now = SystemTime::now()
             .duration_since(UNIX_EPOCH)
             .unwrap()
