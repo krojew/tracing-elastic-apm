@@ -5,9 +5,9 @@ use std::{
 };
 
 use anyhow::Result as AnyResult;
-use std::io::Read;
 use reqwest::{header, Client};
 use serde_json::{json, Value};
+use std::io::Read;
 use tracing::*;
 
 use crate::config::Authorization;
@@ -66,7 +66,7 @@ impl ApmClient {
         apm_address: String,
         authorization: Option<Authorization>,
         allow_invalid_certs: bool,
-        root_cert_path: Option<String>
+        root_cert_path: Option<String>,
     ) -> AnyResult<Self> {
         let authorization = authorization
             .map(|authorization| match authorization {
@@ -86,8 +86,7 @@ impl ApmClient {
         }
         if let Some(path) = root_cert_path {
             let mut buff = Vec::new();
-            std::fs::File::open(&path)?
-                  .read_to_end(&mut buff)?;
+            std::fs::File::open(&path)?.read_to_end(&mut buff)?;
             let cert = reqwest::Certificate::from_pem(&buff)?;
             client_builder = client_builder.add_root_certificate(cert);
         }
