@@ -1,5 +1,9 @@
 # Changelog
 
+## [3.2.1]
+
+- Fixed infinite loop on error.
+
 ## [3.2.0]
 
 - Fixed `tracing-subscriber` compatibility.
