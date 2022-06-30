@@ -8,7 +8,6 @@ use anyhow::Result as AnyResult;
 use reqwest::{header, Client};
 use serde_json::{json, Value};
 use std::io::Read;
-use tracing::*;
 
 use crate::config::Authorization;
 
@@ -119,7 +118,7 @@ impl ApmClient {
 
             let result = request.send().await;
             if let Err(error) = result {
-                error!(error = %error, "Error sending batch to APM!");
+                eprintln!("Error sending batch to APM: {}", error);
             }
         });
     }
