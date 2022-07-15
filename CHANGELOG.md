@@ -1,5 +1,9 @@
 # Changelog
 
+## [3.2.2]
+
+- Fixed rare monotonicity bug with recording elapsed time.
+
 ## [3.2.1]
 
 - Fixed infinite loop on error.

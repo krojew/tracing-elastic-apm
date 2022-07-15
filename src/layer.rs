@@ -181,7 +181,7 @@ where
             .get_mut::<SpanContext>()
             .expect("Span context not found!");
 
-        span_ctx.duration += timestamp - span_ctx.last_timestamp;
+        span_ctx.duration += timestamp.saturating_duration_since(span_ctx.last_timestamp);
     }
 
     fn on_close(&self, id: Id, ctx: Context<'_, S>) {
