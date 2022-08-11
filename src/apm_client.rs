@@ -8,9 +8,14 @@ use anyhow::Result as AnyResult;
 use reqwest::{header, Client};
 use serde_json::{json, Value};
 use std::io::Read;
+use tokio::runtime;
+use tokio::runtime::Runtime;
+use tracing::subscriber;
+use tracing::subscriber::NoSubscriber;
 
 use crate::config::Authorization;
 
+#[derive(Debug)]
 pub(crate) struct Batch {
     metadata: Value,
     transaction: Option<Value>,
@@ -58,6 +63,7 @@ pub(crate) struct ApmClient {
     apm_address: Arc<String>,
     authorization: Option<Arc<String>>,
     client: Client,
+    runtime: Runtime,
 }
 
 impl ApmClient {
@@ -91,10 +97,19 @@ impl ApmClient {
         }
 
         let client = client_builder.build()?;
+
+        // we need a separate runtime, because `hyper` can create spans, which need to be ignored by
+        // thread-local `NoSubscriber`
+        let runtime = runtime::Builder::new_multi_thread()
+            .worker_threads(1)
+            .enable_all()
+            .build()?;
+
         Ok(ApmClient {
             apm_address: Arc::new(apm_address),
             authorization,
             client,
+            runtime,
         })
     }
 
@@ -103,7 +118,8 @@ impl ApmClient {
         let apm_address = self.apm_address.clone();
         let authorization = self.authorization.clone();
 
-        tokio::spawn(async move {
+        self.runtime.spawn(async move {
+            let _subscriber_guard = subscriber::set_default(NoSubscriber::default());
             let mut request = client
                 .post(&format!("{}/intake/v2/events", apm_address))
                 .header(

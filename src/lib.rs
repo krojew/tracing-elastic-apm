@@ -2,8 +2,9 @@
 //!
 //! Use the `new_layer` function to create the layer with given `Config`.
 
-use crate::{config::Config, layer::ApmLayer};
 use anyhow::Result as AnyResult;
+
+use crate::{config::Config, layer::ApmLayer};
 
 mod apm_client;
 pub mod config;
