@@ -1,5 +1,9 @@
 # Changelog
 
+## [3.2.3]
+
+- Fixed a loop with sending spans while sending spans.
+
 ## [3.2.2]
 
 - Fixed rare monotonicity bug with recording elapsed time.
