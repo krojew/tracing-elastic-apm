@@ -12,7 +12,7 @@ keywords = ["tracing", "elastic", "apm", "telemetry"]
 license = "MIT"
 
 [dependencies]
-base64 = "0.20"
+base64 = "0.21"
 fxhash = "0.2"
 rand = "0.8"
 reqwest = { version = "0.11", default-features = false, features = [] }
