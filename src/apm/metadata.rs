@@ -6,7 +6,7 @@ use super::util::{build_process, build_system};
 
 
 pub struct Metadata {
-    json_metadata: Value,
+    pub json_metadata: Value,
 }
 
 impl Metadata {

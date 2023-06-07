@@ -384,3 +384,21 @@ pub(crate) struct Error {
     pub exception: Option<Exception>,
     pub log: Option<Log>,
 }
+
+
+#[derive(Default, Serialize, Debug, Clone)]
+pub(crate) struct Metrics {
+    pub timestamp: Option<u64>,
+    pub name: Option<String>,
+    pub tags: Option<Tags>,
+    pub samples: Option<FxHashMap<String,Metric>>,
+}
+
+#[derive(Default, Serialize, Debug, Clone)]
+pub(crate) struct Metric {
+    #[serde(rename = "type")]
+    pub metric_type: Option<String>,
+    pub value: f64,
+    pub values: Option<Vec<f64>>,
+    pub counts: Option<Vec<u64>>
+}

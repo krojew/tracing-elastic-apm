@@ -8,3 +8,4 @@ pub mod metadata;
 mod util;
 mod service;
 pub mod fields;
+pub mod metric;

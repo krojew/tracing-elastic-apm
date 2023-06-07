@@ -146,7 +146,7 @@ where
 
             let error_log = apm::error_log::create_error_log(&mut visitor,&event, &trace_ctx);
             let metadata = self.meta.create_metadata(&visitor, metadata);
-            let batch = Batch::new(metadata, None, None, Some(json!(error_log)));
+            let batch = Batch::new(metadata, None, None, Some(json!(error_log)),None);
             self.client.send_batch(batch);
         }
     }
@@ -190,12 +190,12 @@ where
             span.duration = duration;
             apm::span::close_span(&mut span,&mut visitor,&trace_context);
             let metadata = self.meta.create_metadata(&visitor, span_ref.metadata());
-            Batch::new(metadata, None, Some(json!(span)), None)
+            Batch::new(metadata, None, Some(json!(span)), None,None)
         } else if let Some(mut transaction) = extensions.remove::<apm::model::Transaction>() {
             transaction.duration = duration;
             apm::transaction::close_transaction(&mut transaction,&mut visitor,&trace_context);
             let metadata = self.meta.create_metadata(&visitor, span_ref.metadata());
-            Batch::new(metadata, Some(json!(transaction)), None, None)
+            Batch::new(metadata, Some(json!(transaction)), None, None,None)
         } else {
             return;
         };
@@ -229,14 +229,19 @@ S: Subscriber + for<'span> LookupSpan<'span>,
         let authorization = config.authorization;
         let apm_address = config.apm_address.clone();
         let ignore_urls = config.ignore_urls.clone();
-       
+
+        let client =  ApmClient::new(
+            apm_address,
+            authorization,
+            allow_invalid_certs,
+            root_cert_path,
+            Metadata::new(&cfg)
+        )?;
+
+        client.enable_metric_gather();
+
         Ok(Self {
-            client: ApmClient::new(
-                apm_address,
-                authorization,
-                allow_invalid_certs,
-                root_cert_path,
-            )?,
+            client: client,
             meta: Metadata::new(&cfg),
             ignore_urls_re:ignore_urls.map(|x| regex::Regex::new(x.as_str()).unwrap() ),
             get_context: WithContext(Self::get_context),
