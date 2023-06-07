@@ -3,16 +3,25 @@
 //! Use the `new_layer` function to create the layer with given `Config`.
 
 use anyhow::Result as AnyResult;
+use tracing_core::Subscriber;
+use tracing_subscriber::registry::LookupSpan;
 
-use crate::{config::Config, layer::ApmLayer};
+use crate::{apm::config::Config, layer::ApmLayer};
 
-mod apm_client;
-pub mod config;
+
 mod layer;
-pub mod model;
 mod visitor;
+mod span_context;
+mod trace_context;
+pub mod middleware;
+pub mod apm;
+pub mod interceptor;
+mod span_ext;
 
 /// Constructs a new telemetry layer for given APM configuration.
-pub fn new_layer(service_name: String, config: Config) -> AnyResult<ApmLayer> {
-    ApmLayer::new(config, service_name.into())
+pub fn new_layer<S>(config: Config) -> AnyResult<ApmLayer<S>> 
+where
+    S: Subscriber + for<'span> LookupSpan<'span>,
+{
+    ApmLayer::new(config)
 }

@@ -5,6 +5,7 @@ use std::{
 };
 
 use anyhow::Result as AnyResult;
+use base64::{engine::general_purpose, Engine};
 use reqwest::{header, Client};
 use serde_json::{json, Value};
 use std::io::Read;
@@ -13,7 +14,7 @@ use tokio::runtime::Runtime;
 use tracing::subscriber;
 use tracing::subscriber::NoSubscriber;
 
-use crate::config::Authorization;
+use crate::apm::config::Authorization;
 
 #[derive(Debug)]
 pub(crate) struct Batch {
@@ -77,10 +78,9 @@ impl ApmClient {
             .map(|authorization| match authorization {
                 Authorization::SecretToken(token) => format!("Bearer {}", token),
                 Authorization::ApiKey(key) => {
-                    format!(
-                        "ApiKey {}",
-                        base64::encode(format!("{}:{}", key.id, key.key))
-                    )
+                    let text  = format!("{}:{}", key.id, key.key);
+                    let encoded: String = general_purpose::STANDARD_NO_PAD.encode(text.as_bytes());
+                    format!("ApiKey {}",encoded)
                 }
             })
             .map(Arc::new);
@@ -106,7 +106,7 @@ impl ApmClient {
             .build()?;
 
         Ok(ApmClient {
-            apm_address: Arc::new(apm_address),
+            apm_address: Arc::new(apm_address.to_string()),
             authorization,
             client,
             runtime,

@@ -7,40 +7,40 @@ use serde_json::Value;
 pub(crate) type Tags = FxHashMap<String, Value>;
 
 /// Name and version of the programming language used.
-#[derive(Default, Serialize, Debug)]
+#[derive(Default, Serialize, Debug, Clone)]
 pub struct Language {
     pub name: String,
     pub version: Option<String>,
 }
 
 /// Name and version of the language runtime running this service.
-#[derive(Default, Serialize, Debug)]
+#[derive(Default, Serialize, Debug, Clone)]
 pub struct Runtime {
     pub name: String,
     pub version: String,
 }
 
 /// Name and version of the web framework used.
-#[derive(Default, Serialize, Debug)]
+#[derive(Default, Serialize, Debug, Clone)]
 pub struct Framework {
     pub name: Option<String>,
     pub version: Option<String>,
 }
 
-#[derive(Default, Serialize, Debug)]
+#[derive(Default, Serialize, Debug, Clone)]
 pub(crate) struct Agent {
     pub name: String,
     pub version: String,
     pub ephemeral_id: Option<String>,
 }
 
-#[derive(Default, Serialize, Debug)]
+#[derive(Default, Serialize, Debug, Clone)]
 /// Unique meaningful name of the service node.
 pub struct ServiceNode {
     pub configured_name: Option<String>,
 }
 
-#[derive(Default, Serialize, Debug)]
+#[derive(Default, Serialize, Debug, Clone)]
 pub(crate) struct Service {
     pub name: String,
     pub version: Option<String>,
@@ -53,7 +53,7 @@ pub(crate) struct Service {
 }
 
 /// Process information.
-#[derive(Default, Serialize, Debug)]
+#[derive(Default, Serialize, Debug, Clone)]
 pub struct Process {
     /// Process ID of the service.
     pub pid: i32,
@@ -64,19 +64,19 @@ pub struct Process {
     pub argv: Option<Vec<String>>,
 }
 
-#[derive(Default, Serialize, Debug)]
+#[derive(Default, Serialize, Debug, Clone)]
 pub struct Container {
     /// Container ID.
     pub id: String,
 }
 
-#[derive(Default, Serialize, Debug)]
+#[derive(Default, Serialize, Debug, Clone)]
 pub struct Node {
     /// Kubernetes node name.
     pub name: Option<String>,
 }
 
-#[derive(Default, Serialize, Debug)]
+#[derive(Default, Serialize, Debug, Clone)]
 pub struct Pod {
     /// Kubernetes pod name.
     pub name: Option<String>,
@@ -84,7 +84,7 @@ pub struct Pod {
     pub uid: Option<String>,
 }
 
-#[derive(Default, Serialize, Debug)]
+#[derive(Default, Serialize, Debug, Clone)]
 pub struct Kubernetes {
     /// Kubernetes namespace.
     pub namespace: Option<String>,
@@ -92,7 +92,7 @@ pub struct Kubernetes {
     pub node: Option<Node>,
 }
 
-#[derive(Default, Serialize, Debug)]
+#[derive(Default, Serialize, Debug, Clone)]
 pub struct System {
     pub architecture: Option<String>,
     pub hostname: Option<String>,
@@ -103,7 +103,7 @@ pub struct System {
     pub kubernetes: Option<Kubernetes>,
 }
 
-#[derive(Default, Serialize, Debug)]
+#[derive(Default, Serialize, Debug, Clone)]
 pub struct User {
     /// Identifier of the logged in user, e.g. the primary key of the user.
     pub id: Option<String>,
@@ -113,7 +113,7 @@ pub struct User {
     pub username: Option<String>,
 }
 
-#[derive(Default, Serialize, Debug)]
+#[derive(Default, Serialize, Debug, Clone)]
 pub struct Account {
     /// Cloud account ID.
     pub id: Option<String>,
@@ -121,14 +121,14 @@ pub struct Account {
     pub name: Option<String>,
 }
 
-#[derive(Default, Serialize, Debug)]
+#[derive(Default, Serialize, Debug, Clone)]
 pub struct Machine {
     /// Cloud instance/machine type.
     #[serde(rename = "type")]
     pub machine_type: Option<String>,
 }
 
-#[derive(Default, Serialize, Debug)]
+#[derive(Default, Serialize, Debug, Clone)]
 pub struct Project {
     /// Cloud project ID.
     pub id: Option<String>,
@@ -136,7 +136,7 @@ pub struct Project {
     pub name: Option<String>,
 }
 
-#[derive(Default, Serialize, Debug)]
+#[derive(Default, Serialize, Debug, Clone)]
 pub struct Instance {
     /// Cloud instance/machine ID.
     pub id: Option<String>,
@@ -144,7 +144,7 @@ pub struct Instance {
     pub name: Option<String>,
 }
 
-#[derive(Default, Serialize, Debug)]
+#[derive(Default, Serialize, Debug, Clone)]
 pub struct Cloud {
     pub account: Option<Account>,
     /// Cloud availability zone name. e.g. us-east-1a.
@@ -158,7 +158,7 @@ pub struct Cloud {
     pub region: Option<String>,
 }
 
-#[derive(Default, Serialize, Debug)]
+#[derive(Default, Serialize, Debug, Clone)]
 pub(crate) struct Metadata {
     pub service: Service,
     pub process: Option<Process>,
@@ -168,13 +168,13 @@ pub(crate) struct Metadata {
     pub labels: Option<Tags>,
 }
 
-#[derive(Default, Serialize, Debug)]
+#[derive(Default, Serialize, Debug, Clone)]
 pub(crate) struct SpanCount {
     pub started: i32,
     pub dropped: Option<i32>,
 }
 
-#[derive(Default, Serialize, Debug)]
+#[derive(Default, Serialize, Debug, Clone)]
 pub(crate) struct Response {
     pub status_code: Option<i32>,
     pub transfer_size: Option<f32>,
@@ -183,13 +183,13 @@ pub(crate) struct Response {
     pub headers: Option<FxHashMap<String, String>>,
 }
 
-#[derive(Default, Serialize, Debug)]
+#[derive(Default, Serialize, Debug, Clone)]
 pub(crate) struct Socket {
     pub encrypted: Option<bool>,
     pub remote_address: Option<String>,
 }
 
-#[derive(Default, Serialize, Debug)]
+#[derive(Default, Serialize, Debug, Clone)]
 pub(crate) struct Url {
     pub raw: Option<String>,
     pub protocol: Option<String>,
@@ -199,9 +199,10 @@ pub(crate) struct Url {
     pub pathname: Option<String>,
     pub search: Option<String>,
     pub hash: Option<String>,
+    pub scheme: Option<String>,
 }
 
-#[derive(Default, Serialize, Debug)]
+#[derive(Default, Serialize, Debug, Clone)]
 pub(crate) struct Request {
     pub body: Option<String>,
     pub headers: Option<FxHashMap<String, String>>,
@@ -211,23 +212,23 @@ pub(crate) struct Request {
     pub url: Url,
 }
 
-#[derive(Default, Serialize, Debug)]
+#[derive(Default, Serialize, Debug, Clone)]
 pub(crate) struct Page {
     pub referer: Option<String>,
     pub url: Option<String>,
 }
 
-#[derive(Default, Serialize, Debug)]
+#[derive(Default, Serialize, Debug, Clone)]
 pub(crate) struct Queue {
     pub name: Option<String>,
 }
 
-#[derive(Default, Serialize, Debug)]
+#[derive(Default, Serialize, Debug, Clone)]
 pub(crate) struct Age {
     pub ms: Option<i32>,
 }
 
-#[derive(Default, Serialize, Debug)]
+#[derive(Default, Serialize, Debug, Clone)]
 pub(crate) struct Message {
     pub queue: Option<Queue>,
     pub age: Option<Age>,
@@ -235,7 +236,7 @@ pub(crate) struct Message {
     pub headers: Option<FxHashMap<String, String>>,
 }
 
-#[derive(Default, Serialize, Debug)]
+#[derive(Default, Serialize, Debug, Clone)]
 pub(crate) struct TransactionContext {
     pub response: Option<Response>,
     pub request: Option<Request>,
@@ -246,7 +247,7 @@ pub(crate) struct TransactionContext {
     pub message: Option<Message>,
 }
 
-#[derive(Serialize, Debug)]
+#[derive(Serialize, Debug, Clone)]
 #[serde(rename_all = "lowercase")]
 #[allow(dead_code)]
 pub(crate) enum Outcome {
@@ -255,12 +256,13 @@ pub(crate) enum Outcome {
     Unknown,
 }
 
-#[derive(Default, Serialize, Debug)]
+#[derive(Default, Serialize, Debug, Clone)]
 pub(crate) struct Transaction {
     pub timestamp: Option<u64>,
     pub name: Option<String>,
     #[serde(rename = "type")]
     pub transaction_type: String,
+    pub subtype: Option<String>,
     pub id: String,
     pub trace_id: String,
     pub parent_id: Option<String>,
@@ -274,7 +276,7 @@ pub(crate) struct Transaction {
     pub sampled: Option<bool>,
 }
 
-#[derive(Default, Serialize, Debug)]
+#[derive(Default, Serialize, Debug, Clone)]
 pub(crate) struct DestinationService {
     #[serde(rename = "type")]
     pub service_type: String,
@@ -282,14 +284,14 @@ pub(crate) struct DestinationService {
     pub resource: String,
 }
 
-#[derive(Default, Serialize, Debug)]
+#[derive(Default, Serialize, Debug, Clone)]
 pub(crate) struct Destination {
     pub address: Option<String>,
     pub port: Option<i32>,
     pub service: Option<DestinationService>,
 }
 
-#[derive(Default, Serialize, Debug)]
+#[derive(Default, Serialize, Debug, Clone)]
 pub(crate) struct Db {
     pub instance: Option<String>,
     pub link: Option<String>,
@@ -300,7 +302,7 @@ pub(crate) struct Db {
     pub rows_affected: Option<i32>,
 }
 
-#[derive(Default, Serialize, Debug)]
+#[derive(Default, Serialize, Debug, Clone)]
 pub(crate) struct Http {
     pub url: Option<String>,
     pub status_code: Option<i32>,
@@ -308,13 +310,13 @@ pub(crate) struct Http {
     pub response: Option<Response>,
 }
 
-#[derive(Default, Serialize, Debug)]
+#[derive(Default, Serialize, Debug, Clone)]
 pub(crate) struct SpanService {
     pub agent: Option<Agent>,
     pub name: Option<String>,
 }
 
-#[derive(Default, Serialize, Debug)]
+#[derive(Default, Serialize, Debug, Clone)]
 pub(crate) struct SpanContext {
     pub destination: Option<Destination>,
     pub db: Option<Db>,
@@ -324,7 +326,7 @@ pub(crate) struct SpanContext {
     pub message: Option<Message>,
 }
 
-#[derive(Default, Serialize, Debug)]
+#[derive(Default, Serialize, Debug, Clone)]
 pub(crate) struct Span {
     pub timestamp: Option<u64>,
     #[serde(rename = "type")]
@@ -345,7 +347,7 @@ pub(crate) struct Span {
     pub sync: Option<bool>,
 }
 
-#[derive(Default, Serialize, Debug)]
+#[derive(Default, Serialize, Debug, Clone)]
 pub(crate) struct Log {
     pub level: Option<String>,
     pub logger_name: Option<String>,
@@ -353,7 +355,7 @@ pub(crate) struct Log {
     pub param_message: Option<String>,
 }
 
-#[derive(Default, Serialize, Debug)]
+#[derive(Default, Serialize, Debug, Clone)]
 pub(crate) struct Exception {
     pub code: Option<String>,
     pub message: Option<String>,
@@ -363,14 +365,14 @@ pub(crate) struct Exception {
     pub handled: Option<bool>,
 }
 
-#[derive(Default, Serialize, Debug)]
+#[derive(Default, Serialize, Debug, Clone)]
 pub(crate) struct ErrorTransaction {
     pub sampled: Option<bool>,
     #[serde(rename = "type")]
     pub transaction_type: Option<String>,
 }
 
-#[derive(Default, Serialize, Debug)]
+#[derive(Default, Serialize, Debug, Clone)]
 pub(crate) struct Error {
     pub id: String,
     pub trace_id: Option<String>,

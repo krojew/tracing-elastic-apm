@@ -5,11 +5,11 @@ use serde::Serialize;
 use serde_json::{json, Value};
 use tracing::field::{Field, Visit};
 
-use crate::config::TRACE_ID_FIELD_NAME;
+use crate::apm::config::TRACE_ID_FIELD_NAME;
 
 #[derive(Default)]
 #[repr(transparent)]
-pub(crate) struct ApmVisitor(pub(crate) FxHashMap<String, Value>);
+pub struct ApmVisitor(pub(crate) FxHashMap<String, Value>);
 
 impl Visit for ApmVisitor {
     fn record_i64(&mut self, field: &Field, value: i64) {

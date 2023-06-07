@@ -1,39 +1,13 @@
 //! Layer configuration.
 
-use crate::model::{Cloud, Framework, Language, Process, Runtime, ServiceNode, System, User};
+use crate::apm::*;
+use util::{build_service};
+use crate::apm::service::Service;
 
 /// Name for the trace id field, if one needs to be supplied manually.
 pub const TRACE_ID_FIELD_NAME: &str = "trace_id";
 
-pub struct Service {
-    pub(crate) version: Option<String>,
-    pub(crate) environment: Option<String>,
-    pub(crate) language: Option<Language>,
-    pub(crate) runtime: Option<Runtime>,
-    pub(crate) framework: Option<Framework>,
-    pub(crate) node: Option<ServiceNode>,
-}
-
-impl Service {
-    pub fn new(
-        version: Option<String>,
-        environment: Option<String>,
-        language: Option<Language>,
-        runtime: Option<Runtime>,
-        framework: Option<Framework>,
-        node: Option<ServiceNode>,
-    ) -> Self {
-        Service {
-            version,
-            environment,
-            language,
-            runtime,
-            framework,
-            node,
-        }
-    }
-}
-
+#[derive(Debug,Clone)]
 pub struct ApiKey {
     pub(crate) id: String,
     pub(crate) key: String,
@@ -46,28 +20,45 @@ impl ApiKey {
 }
 
 /// APM authorization method.
+#[derive(Debug,Clone)]
 pub enum Authorization {
     SecretToken(String),
     ApiKey(ApiKey),
 }
 
-#[derive(Default)]
+#[derive(Default, Clone)]
 pub struct Config {
     pub(crate) apm_address: String,
     pub(crate) authorization: Option<Authorization>,
     pub(crate) service: Option<Service>,
-    pub(crate) process: Option<Process>,
-    pub(crate) system: Option<System>,
-    pub(crate) user: Option<User>,
-    pub(crate) cloud: Option<Cloud>,
+    pub(crate) process: Option<model::Process>,
+    pub(crate) system: Option<model::System>,
+    pub(crate) user: Option<model::User>,
+    pub(crate) cloud: Option<model::Cloud>,
     pub(crate) allow_invalid_certs: bool,
     pub(crate) root_cert_path: Option<String>,
+    pub(crate) ignore_urls: Option<String>,
 }
 
 impl Config {
     pub fn new(apm_address: String) -> Self {
         Config {
             apm_address,
+            ..Default::default()
+        }
+    }
+
+    pub fn from_env() -> Self {
+        let apm_address = std::env::var("ELASTIC_APM_SERVER_URL").expect("ELASTIC_APM_SERVER_URL should be setting");
+        let apm_secret_token = std::env::var("ELASTIC_APM_SECRET_TOKEN").expect("ELASTIC_APM_SECRET_TOKEN should be setting");
+        let ignore_urls = std::env::var("ELASTIC_APM_IGNORE_URLS").ok();
+        let authorization = Some(Authorization::SecretToken(apm_secret_token));
+        let service  = build_service();
+        Config {
+            apm_address,
+            authorization,
+            service,
+            ignore_urls,
             ..Default::default()
         }
     }
@@ -92,23 +83,28 @@ impl Config {
         self
     }
 
-    pub fn with_process(mut self, process: Process) -> Self {
+    pub fn with_process(mut self, process: model::Process) -> Self {
         self.process = Some(process);
         self
     }
 
-    pub fn with_system(mut self, system: System) -> Self {
+    pub fn with_system(mut self, system: model::System) -> Self {
         self.system = Some(system);
         self
     }
 
-    pub fn with_user(mut self, user: User) -> Self {
+    pub fn with_user(mut self, user: model::User) -> Self {
         self.user = Some(user);
         self
     }
 
-    pub fn with_cloud(mut self, cloud: Cloud) -> Self {
+    pub fn with_cloud(mut self, cloud: model::Cloud) -> Self {
         self.cloud = Some(cloud);
+        self
+    }
+
+    pub fn with_ignore_urls(mut self, ignore_urls: String) -> Self {
+        self.ignore_urls = Some(ignore_urls);
         self
     }
 }

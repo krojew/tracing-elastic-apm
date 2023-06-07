@@ -1,30 +1,63 @@
+[workspace]
+members = ["./", "examples"]
+
 [package]
-name = "tracing-elastic-apm"
-version = "3.2.3"
-authors = ["Kamil Rojewski <kamil.rojewski@gmail.com>"]
-edition = "2018"
-description = "Elastic APM intake API tracing layer."
+name          = "tracing-elastic-apm"
+version       = "0.1.0"
+authors       = ["Kamil Rojewski <kamil.rojewski@gmail.com>"]
+edition       = "2018"
+description   = "Elastic APM intake API tracing layer."
 documentation = "https://docs.rs/tracing-elastic-apm"
-homepage = "https://github.com/krojew/tracing-elastic-apm"
-repository = "https://github.com/krojew/tracing-elastic-apm"
-readme = "./README.md"
-keywords = ["tracing", "elastic", "apm", "telemetry"]
-license = "MIT"
+homepage      = "https://github.com/krojew/tracing-elastic-apm"
+repository    = "https://github.com/krojew/tracing-elastic-apm"
+readme        = "./README.md"
+keywords      = ["apm", "elastic", "telemetry", "tracing"]
+license       = "MIT"
 
 [dependencies]
-base64 = "0.21"
-fxhash = "0.2"
-rand = "0.8"
-reqwest = { version = "0.11", default-features = false, features = [] }
-serde = { version = "1.0", features = ["derive"] }
-serde_json = "1.0"
-tokio = { version = "1", features = ["rt-multi-thread"] }
-tracing = "0.1"
-tracing-subscriber = { version = "0.3", default-features = false, features = ["std"] }
-version = "3.0"
-anyhow = "1.0.42"
+base64             = "0.21.2"
+fxhash             = "0.2"
+rand               = "0.8"
+reqwest            = { version = "0.11", default-features = false, features = [] }
+serde              = { version = "1.0", features = ["derive"] }
+serde_json         = { version = "1.0.96" }
+tokio              = { version = "1", features = ["rt-multi-thread"] }
+tracing            = { version = "0.1.37" }
+tracing-core       = { version = "0.1.31", default-features = false }
+tracing-subscriber = { version = "0.3.17", default-features = false, features = ["std"] }
+version            = "3.0"
+anyhow             = "1.0.71"
+futures-channel    = "0.3"
+futures-util       = { version = "0.3", default-features = false, features = ["sink", "std"] }
+http               = "0.2"
+axum               = "0.6.18"
+tower-http         = { version = "0.4.0", features = ["trace"] }
+once_cell          = "1.10"
+bytes              = "1.4.0"
+indexmap           = "1.8"
+tower              = { version = "0.4.13" }
+sysinfo            = { version = "0.29.0" }
+gethostname        = { version = "0.4.3" }
+tonic              = { version = "0.9.2" }
+regex              = { version = "1.8.4" }
+
+[dev-dependencies]
+assert2 = "0.3"
+hyper   = "0.14"
+insta   = { version = "1.29.0", features = ["redactions", "yaml"] }
+
+rstest = "0.17"
+serde = { version = "1.0.136", features = ["derive"] }
+serde_json = "1.0.79"
+tokio = { version = "1.17", features = ["full"] }
+tracing-subscriber = { version = "0.3", default-features = false, features = [
+    "env-filter",
+    "fmt",
+    "json",
+] }
+
 
 [features]
-default = ["default-tls"]
+default     = ["default-tls"]
 default-tls = ["reqwest/default-tls"]
-rustls-tls = ["reqwest/rustls-tls"]
+rustls-tls  = ["reqwest/rustls-tls"]
