@@ -16,6 +16,8 @@ use tracing::subscriber::NoSubscriber;
 
 use crate::apm::config::Authorization;
 
+use super::metric::gather_metrics;
+
 
 #[derive(Debug)]
 pub(crate) struct Batch {
@@ -73,7 +75,7 @@ pub(crate) struct ApmClient {
     authorization: Option<Arc<String>>,
     client: Client,
     runtime: Runtime,
-    metadata: crate::apm::metadata::Metadata,
+    _metadata: crate::apm::metadata::Metadata,
 }
 
 static mut ENABLE_METRIC_GATGHER :bool = false;
@@ -122,15 +124,15 @@ impl ApmClient {
             authorization,
             client,
             runtime,
-            metadata
+            _metadata:metadata
         })
     }
 
-    pub fn enable_metric_gather(&self) {
+    pub fn _enable_metric_gather(&self) {
         let client = self.client.clone();
         let apm_address = self.apm_address.clone();
         let authorization = self.authorization.clone();
-        let metadata = self.metadata.json_metadata.clone();
+        let metadata = self._metadata.json_metadata.clone();
 
         unsafe { ENABLE_METRIC_GATGHER = true };
         
@@ -169,13 +171,14 @@ impl ApmClient {
     }
 
 
-    pub fn send_batch(&self,batch:Batch) {
+    pub fn send_batch(&self,mut batch:Batch) {
         let client = self.client.clone();
         let apm_address = self.apm_address.clone();
         let authorization = self.authorization.clone();
 
         self.runtime.spawn(async move {
             let _subscriber_guard = subscriber::set_default(NoSubscriber::default());
+            batch.metricset = Some(json!(gather_metrics()));
             let mut request = client
                 .post(&format!("{}/intake/v2/events", apm_address))
                 .header(

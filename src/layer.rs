@@ -238,7 +238,7 @@ S: Subscriber + for<'span> LookupSpan<'span>,
             Metadata::new(&cfg)
         )?;
 
-        client.enable_metric_gather();
+        // client.enable_metric_gather();
 
         Ok(Self {
             client: client,
