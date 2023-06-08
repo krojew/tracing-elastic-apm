@@ -1,29 +1,43 @@
 # tracing-elastic-apm
 
-[![crates.io version](https://img.shields.io/crates/v/tracing-elastic-apm.svg)](https://crates.io/crates/tracing-elastic-apm)
-[![Documentation (latest release)](https://docs.rs/tracing-elastic-apm/badge.svg)](https://docs.rs/tracing-elastic-apm/)
-
 [Elastic APM](https://www.elastic.co/apm) tracing layer. Uses the native ingest API.
+
+This repository is a fork of https://github.com/krojew/tracing-elastic-apm including following improved features:
+
+ - load config from Elastic env as ELASTIC_APM_*
+ - HTTP & GRPC Middleware for Axum
+ - integrated with built-in metric
+ - distributed tracing by TokioTracingInterceptor
+ - ignore health check url by ELASTIC_APM_IGNORE_URLS
 
 ## Usage
 
 Create a new tracing Layer:
 
 ```rust
-let layer = tracing_elastic_apm::new_layer(
-    "ServiceName".to_string(),
-    // remember to use desired protocol below, e.g. http://
-    tracing_elastic_apm::Config::new("APM address".to_string())
-)?;
+    let apm_layer = tracing_elastic_apm::new_layer(
+        tracing_elastic_apm::apm::config::Config::from_env()
+    ).unwrap();
 ```
 
 Register the layer:
 
 ```rust
-tracing_subscriber::registry()
-    .with(layer)
-    .init();
+    let filter = EnvFilter::builder().with_default_directive(LevelFilter::INFO.into()).from_env_lossy();
+    let stdout = tracing_subscriber::fmt::layer().pretty().compact().with_level(true);
+    let subscriber = tracing_subscriber::registry().with(filter).with(stdout).with(apm_layer);
+    subscriber.init();  
 ```
+
+Register Middleware:
+```rust
+    Server::builder()
+        .layer(ServiceBuilder::new().layer(apm_tracing_layer_grpc()))
+        .add_service(GreeterServer::new(greeter))
+        .serve(addr)
+        .await?;
+```
+
 
 Take a look at `Config` for more configuration options.
 
