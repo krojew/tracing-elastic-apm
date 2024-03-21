@@ -15,7 +15,7 @@ license = "MIT"
 base64 = "0.22"
 fxhash = "0.2"
 rand = "0.8"
-reqwest = { version = "0.11", default-features = false, features = [] }
+reqwest = { version = "0.12", default-features = false, features = [] }
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
 tokio = { version = "1", features = ["rt-multi-thread"] }
