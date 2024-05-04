@@ -8,7 +8,7 @@ use crate::{config::Config, layer::ApmLayer};
 
 mod apm_client;
 pub mod config;
-mod layer;
+pub mod layer;
 pub mod model;
 mod visitor;
 
