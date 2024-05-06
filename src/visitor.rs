@@ -45,12 +45,14 @@ impl ApmVisitor {
 
 #[derive(Default)]
 #[repr(transparent)]
-pub(crate) struct TraceIdVisitor(pub(crate) Option<u64>);
+pub(crate) struct TraceIdVisitor(pub(crate) Option<u128>);
 
 impl Visit for TraceIdVisitor {
     fn record_i64(&mut self, _field: &Field, _value: i64) {}
 
-    fn record_u64(&mut self, field: &Field, value: u64) {
+    fn record_u64(&mut self, _field: &Field, _value: u64) {}
+
+    fn record_u128(&mut self, field: &Field, value: u128) {
         if field.name() == TRACE_ID_FIELD_NAME {
             self.0 = Some(value);
         }
