@@ -8,6 +8,8 @@ use anyhow::Result as AnyResult;
 use reqwest::{header, Client};
 use serde_json::{json, Value};
 use std::io::Read;
+use base64::Engine;
+use base64::engine::general_purpose;
 use tokio::runtime;
 use tokio::runtime::Runtime;
 use tracing::subscriber;
@@ -79,7 +81,7 @@ impl ApmClient {
                 Authorization::ApiKey(key) => {
                     format!(
                         "ApiKey {}",
-                        base64::encode(format!("{}:{}", key.id, key.key))
+                        general_purpose::STANDARD.encode(format!("{}:{}", key.id, key.key))
                     )
                 }
             })
@@ -91,7 +93,7 @@ impl ApmClient {
         }
         if let Some(path) = root_cert_path {
             let mut buff = Vec::new();
-            std::fs::File::open(&path)?.read_to_end(&mut buff)?;
+            std::fs::File::open(path)?.read_to_end(&mut buff)?;
             let cert = reqwest::Certificate::from_pem(&buff)?;
             client_builder = client_builder.add_root_certificate(cert);
         }
@@ -121,7 +123,7 @@ impl ApmClient {
         self.runtime.spawn(async move {
             let _subscriber_guard = subscriber::set_default(NoSubscriber::default());
             let mut request = client
-                .post(&format!("{}/intake/v2/events", apm_address))
+                .post(format!("{}/intake/v2/events", apm_address))
                 .header(
                     header::CONTENT_TYPE,
                     header::HeaderValue::from_static("application/x-ndjson"),

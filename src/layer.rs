@@ -81,7 +81,7 @@ where
             attrs.record(&mut visitor);
 
             let trace_ctx = TraceContext {
-                trace_id: visitor.0.unwrap_or_else(|| thread_rng().gen()),
+                trace_id: visitor.0.unwrap_or_else(random),
             };
 
             let new_transaction = Transaction {
@@ -120,12 +120,8 @@ where
         } else if event.is_root() {
             // don't bother checking thread local if span is explicitly root according to this fn
             None
-        } else if let Some(parent_id) = ctx.current_span().id() {
-            // implicit parent from thread local ctx
-            Some(parent_id.clone())
         } else {
-            // no parent span, thus this is a root span
-            None
+            ctx.current_span().id().cloned()
         };
 
         if let Some(parent_id) = &parent_id {
@@ -139,7 +135,7 @@ where
             event.record(&mut visitor);
 
             let error = Error {
-                id: thread_rng().gen::<u128>().to_string(),
+                id: random::<u128>().to_string(),
                 trace_id: Some(trace_ctx.trace_id.to_string()),
                 parent_id: Some(parent_id.into_u64().to_string()),
                 culprit: Some(metadata.target().to_string()),

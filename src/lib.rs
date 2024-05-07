@@ -14,5 +14,5 @@ mod visitor;
 
 /// Constructs a new telemetry layer for given APM configuration.
 pub fn new_layer(service_name: String, config: Config) -> AnyResult<ApmLayer> {
-    ApmLayer::new(config, service_name.into())
+    ApmLayer::new(config, service_name)
 }
