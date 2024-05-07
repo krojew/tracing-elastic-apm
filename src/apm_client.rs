@@ -5,11 +5,11 @@ use std::{
 };
 
 use anyhow::Result as AnyResult;
+use base64::engine::general_purpose;
+use base64::Engine;
 use reqwest::{header, Client};
 use serde_json::{json, Value};
 use std::io::Read;
-use base64::Engine;
-use base64::engine::general_purpose;
 use tokio::runtime;
 use tokio::runtime::Runtime;
 use tracing::subscriber;
