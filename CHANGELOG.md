@@ -1,5 +1,9 @@
 # Changelog
 
+## [3.3.0]
+
+- Exposed model to allow layer introspection.
+
 ## [3.2.3]
 
 - Fixed a loop with sending spans while sending spans.
@@ -18,7 +22,8 @@
 
 ## [3.1.0]
 
-- Added support for specifying custom trace id to new spans via `config::TRACE_ID_FIELD_NAME` field.
+- Added support for specifying custom trace id to new spans
+  via `config::TRACE_ID_FIELD_NAME` field.
 
 ## [3.0.0]
 
