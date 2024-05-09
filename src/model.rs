@@ -1,18 +1,84 @@
 //! APM data model.
 
+#[cfg(feature = "valuable")]
+use std::collections::HashMap;
+
+#[cfg(not(feature = "valuable"))]
 use fxhash::FxHashMap;
 use serde::Serialize;
 use serde_json::Value;
+#[cfg(feature = "valuable")]
+use valuable::Valuable;
 
+#[cfg(not(feature = "valuable"))]
 pub type Tags = FxHashMap<String, Value>;
+#[cfg(feature = "valuable")]
+pub type Tags = HashMap<String, Value>;
+
+#[cfg(not(feature = "valuable"))]
+pub type Headers = FxHashMap<String, String>;
+#[cfg(feature = "valuable")]
+pub type Headers = HashMap<String, String>;
+
+#[cfg(feature = "valuable")]
+struct VisitHeaders {
+    headers: HashMap<String, String>,
+}
+
+#[cfg(feature = "valuable")]
+impl valuable::Visit for VisitHeaders {
+    fn visit_value(&mut self, value: valuable::Value<'_>) {
+        match value {
+            valuable::Value::Mappable(v) => v.visit(self),
+            _ => {}
+        }
+    }
+
+    fn visit_entry(&mut self, key: valuable::Value<'_>, value: valuable::Value<'_>) {
+        match (key, value) {
+            (valuable::Value::String(k), valuable::Value::String(v)) => {
+                self.headers.insert(k.to_string(), v.to_string());
+            }
+            _ => {}
+        }
+    }
+}
+
+#[cfg(not(feature = "valuable"))]
+type Marks = FxHashMap<String, FxHashMap<String, f32>>;
+#[cfg(feature = "valuable")]
+type Marks = HashMap<String, HashMap<String, f32>>;
 
 /// Name and version of the programming language used.
+#[cfg_attr(feature = "valuable", derive(Valuable))]
 #[derive(Default, Serialize, Debug)]
 pub struct Language {
     pub name: String,
     pub version: Option<String>,
 }
 
+#[cfg(feature = "valuable")]
+impl valuable::Visit for Language {
+    fn visit_value(&mut self, value: valuable::Value<'_>) {
+        match value {
+            valuable::Value::Structable(v) => v.visit(self),
+            _ => {}
+        }
+    }
+
+    fn visit_named_fields(&mut self, named_values: &valuable::NamedValues<'_>) {
+        match named_values.get_by_name("name") {
+            Some(valuable::Value::String(v)) => self.name = v.to_string(),
+            _ => {}
+        };
+        match named_values.get_by_name("version") {
+            Some(valuable::Value::String(v)) => self.version = Some(v.to_string()),
+            _ => {}
+        };
+    }
+}
+
+#[cfg_attr(feature = "valuable", derive(Valuable))]
 /// Name and version of the language runtime running this service.
 #[derive(Default, Serialize, Debug)]
 pub struct Runtime {
@@ -20,6 +86,28 @@ pub struct Runtime {
     pub version: String,
 }
 
+#[cfg(feature = "valuable")]
+impl valuable::Visit for Runtime {
+    fn visit_value(&mut self, value: valuable::Value<'_>) {
+        match value {
+            valuable::Value::Structable(v) => v.visit(self),
+            _ => {}
+        }
+    }
+
+    fn visit_named_fields(&mut self, named_values: &valuable::NamedValues<'_>) {
+        match named_values.get_by_name("name") {
+            Some(valuable::Value::String(v)) => self.name = v.to_string(),
+            _ => {}
+        };
+        match named_values.get_by_name("version") {
+            Some(valuable::Value::String(v)) => self.version = v.to_string(),
+            _ => {}
+        };
+    }
+}
+
+#[cfg_attr(feature = "valuable", derive(Valuable))]
 /// Name and version of the web framework used.
 #[derive(Default, Serialize, Debug)]
 pub struct Framework {
@@ -27,6 +115,28 @@ pub struct Framework {
     pub version: Option<String>,
 }
 
+#[cfg(feature = "valuable")]
+impl valuable::Visit for Framework {
+    fn visit_value(&mut self, value: valuable::Value<'_>) {
+        match value {
+            valuable::Value::Structable(v) => v.visit(self),
+            _ => {}
+        }
+    }
+
+    fn visit_named_fields(&mut self, named_values: &valuable::NamedValues<'_>) {
+        match named_values.get_by_name("name") {
+            Some(valuable::Value::String(v)) => self.name = Some(v.to_string()),
+            _ => {}
+        };
+        match named_values.get_by_name("version") {
+            Some(valuable::Value::String(v)) => self.version = Some(v.to_string()),
+            _ => {}
+        };
+    }
+}
+
+#[cfg_attr(feature = "valuable", derive(Valuable))]
 #[derive(Default, Serialize, Debug)]
 pub struct Agent {
     pub name: String,
@@ -34,10 +144,53 @@ pub struct Agent {
     pub ephemeral_id: Option<String>,
 }
 
+#[cfg(feature = "valuable")]
+impl valuable::Visit for Agent {
+    fn visit_value(&mut self, value: valuable::Value<'_>) {
+        match value {
+            valuable::Value::Structable(v) => v.visit(self),
+            _ => {}
+        }
+    }
+
+    fn visit_named_fields(&mut self, named_values: &valuable::NamedValues<'_>) {
+        match named_values.get_by_name("name") {
+            Some(valuable::Value::String(v)) => self.name = v.to_string(),
+            _ => {}
+        };
+        match named_values.get_by_name("version") {
+            Some(valuable::Value::String(v)) => self.version = v.to_string(),
+            _ => {}
+        };
+        match named_values.get_by_name("ephemeral_id") {
+            Some(valuable::Value::String(v)) => self.ephemeral_id = Some(v.to_string()),
+            _ => {}
+        };
+    }
+}
+
+#[cfg_attr(feature = "valuable", derive(Valuable))]
 #[derive(Default, Serialize, Debug)]
 /// Unique meaningful name of the service node.
 pub struct ServiceNode {
     pub configured_name: Option<String>,
+}
+
+#[cfg(feature = "valuable")]
+impl valuable::Visit for ServiceNode {
+    fn visit_value(&mut self, value: valuable::Value<'_>) {
+        match value {
+            valuable::Value::Structable(v) => v.visit(self),
+            _ => {}
+        }
+    }
+
+    fn visit_named_fields(&mut self, named_values: &valuable::NamedValues<'_>) {
+        match named_values.get_by_name("configured_name") {
+            Some(valuable::Value::String(v)) => self.configured_name = Some(v.to_string()),
+            _ => {}
+        };
+    }
 }
 
 #[derive(Default, Serialize, Debug)]
@@ -174,21 +327,84 @@ pub struct SpanCount {
     pub dropped: Option<i32>,
 }
 
+#[cfg_attr(feature = "valuable", derive(Valuable))]
 #[derive(Default, Serialize, Debug)]
 pub struct Response {
     pub status_code: Option<i32>,
     pub transfer_size: Option<f32>,
     pub encoded_body_size: Option<f32>,
     pub decoded_body_size: Option<f32>,
-    pub headers: Option<FxHashMap<String, String>>,
+    pub headers: Option<Headers>,
 }
 
+#[cfg(feature = "valuable")]
+impl valuable::Visit for Response {
+    fn visit_value(&mut self, value: valuable::Value<'_>) {
+        match value {
+            valuable::Value::Structable(v) => v.visit(self),
+            _ => {}
+        }
+    }
+
+    fn visit_named_fields(&mut self, named_values: &valuable::NamedValues<'_>) {
+        match named_values.get_by_name("status_code") {
+            Some(valuable::Value::I32(v)) => self.status_code = Some(*v),
+            _ => {}
+        };
+        match named_values.get_by_name("transfer_size") {
+            Some(valuable::Value::F32(v)) => self.transfer_size = Some(*v),
+            _ => {}
+        };
+        match named_values.get_by_name("encoded_body_size") {
+            Some(valuable::Value::F32(v)) => self.encoded_body_size = Some(*v),
+            _ => {}
+        };
+        match named_values.get_by_name("decoded_body_size") {
+            Some(valuable::Value::F32(v)) => self.decoded_body_size = Some(*v),
+            _ => {}
+        };
+        match named_values.get_by_name("headers") {
+            Some(valuable::Value::Mappable(headers)) => {
+                let mut visit = VisitHeaders {
+                    headers: HashMap::new(),
+                };
+                headers.visit(&mut visit);
+                self.headers = Some(visit.headers)
+            }
+            _ => {}
+        };
+    }
+}
+
+#[cfg_attr(feature = "valuable", derive(Valuable))]
 #[derive(Default, Serialize, Debug)]
 pub struct Socket {
     pub encrypted: Option<bool>,
     pub remote_address: Option<String>,
 }
 
+#[cfg(feature = "valuable")]
+impl valuable::Visit for Socket {
+    fn visit_value(&mut self, value: valuable::Value<'_>) {
+        match value {
+            valuable::Value::Structable(v) => v.visit(self),
+            _ => {}
+        }
+    }
+
+    fn visit_named_fields(&mut self, named_values: &valuable::NamedValues<'_>) {
+        match named_values.get_by_name("encrypted") {
+            Some(valuable::Value::Bool(v)) => self.encrypted = Some(*v),
+            _ => {}
+        };
+        match named_values.get_by_name("remote_address") {
+            Some(valuable::Value::String(v)) => self.remote_address = Some(v.to_string()),
+            _ => {}
+        };
+    }
+}
+
+#[cfg_attr(feature = "valuable", derive(Valuable))]
 #[derive(Default, Serialize, Debug)]
 pub struct Url {
     pub raw: Option<String>,
@@ -201,14 +417,109 @@ pub struct Url {
     pub hash: Option<String>,
 }
 
+#[cfg(feature = "valuable")]
+impl valuable::Visit for Url {
+    fn visit_value(&mut self, value: valuable::Value<'_>) {
+        match value {
+            valuable::Value::Structable(v) => v.visit(self),
+            _ => {}
+        }
+    }
+
+    fn visit_named_fields(&mut self, named_values: &valuable::NamedValues<'_>) {
+        match named_values.get_by_name("raw") {
+            Some(valuable::Value::String(v)) => self.raw = Some(v.to_string()),
+            _ => {}
+        }
+        match named_values.get_by_name("protocol") {
+            Some(valuable::Value::String(v)) => self.protocol = Some(v.to_string()),
+            _ => {}
+        }
+        match named_values.get_by_name("full") {
+            Some(valuable::Value::String(v)) => self.full = Some(v.to_string()),
+            _ => {}
+        }
+        match named_values.get_by_name("hostname") {
+            Some(valuable::Value::String(v)) => self.hostname = Some(v.to_string()),
+            _ => {}
+        }
+        match named_values.get_by_name("port") {
+            Some(valuable::Value::I32(v)) => self.port = Some(*v),
+            _ => {}
+        }
+        match named_values.get_by_name("pathname") {
+            Some(valuable::Value::String(v)) => self.pathname = Some(v.to_string()),
+            _ => {}
+        }
+        match named_values.get_by_name("search") {
+            Some(valuable::Value::String(v)) => self.search = Some(v.to_string()),
+            _ => {}
+        }
+        match named_values.get_by_name("hash") {
+            Some(valuable::Value::String(v)) => self.hash = Some(v.to_string()),
+            _ => {}
+        }
+    }
+}
+
+#[cfg_attr(feature = "valuable", derive(Valuable))]
 #[derive(Default, Serialize, Debug)]
 pub struct Request {
     pub body: Option<String>,
-    pub headers: Option<FxHashMap<String, String>>,
+    pub headers: Option<Headers>,
     pub http_version: Option<String>,
     pub method: String,
     pub socket: Option<Socket>,
     pub url: Url,
+}
+
+#[cfg(feature = "valuable")]
+impl valuable::Visit for Request {
+    fn visit_value(&mut self, value: valuable::Value<'_>) {
+        match value {
+            valuable::Value::Structable(v) => v.visit(self),
+            _ => {}
+        }
+    }
+
+    fn visit_named_fields(&mut self, named_values: &valuable::NamedValues<'_>) {
+        match named_values.get_by_name("body") {
+            Some(valuable::Value::String(v)) => self.body = Some(v.to_string()),
+            _ => {}
+        };
+        match named_values.get_by_name("headers") {
+            Some(valuable::Value::Mappable(headers)) => {
+                let mut visit = VisitHeaders {
+                    headers: HashMap::new(),
+                };
+                headers.visit(&mut visit);
+                self.headers = Some(visit.headers)
+            }
+            _ => {}
+        };
+        match named_values.get_by_name("http_version") {
+            Some(valuable::Value::String(v)) => self.http_version = Some(v.to_string()),
+            _ => {}
+        };
+        match named_values.get_by_name("method") {
+            Some(valuable::Value::String(v)) => self.method = v.to_string(),
+            _ => {}
+        };
+        match named_values.get_by_name("socket") {
+            Some(valuable::Value::Structable(socket)) => {
+                let mut visit_socket = Socket::default();
+                socket.visit(&mut visit_socket);
+                self.socket = Some(visit_socket);
+            }
+            _ => {}
+        };
+        match named_values.get_by_name("url") {
+            Some(valuable::Value::Structable(url)) => {
+                url.visit(&mut self.url);
+            }
+            _ => {}
+        };
+    }
 }
 
 #[derive(Default, Serialize, Debug)]
@@ -217,22 +528,102 @@ pub struct Page {
     pub url: Option<String>,
 }
 
+#[cfg_attr(feature = "valuable", derive(Valuable))]
 #[derive(Default, Serialize, Debug)]
 pub struct Queue {
     pub name: Option<String>,
 }
 
+#[cfg(feature = "valuable")]
+impl valuable::Visit for Queue {
+    fn visit_value(&mut self, value: valuable::Value<'_>) {
+        match value {
+            valuable::Value::Structable(v) => v.visit(self),
+            _ => {}
+        }
+    }
+
+    fn visit_named_fields(&mut self, named_values: &valuable::NamedValues<'_>) {
+        match named_values.get_by_name("name") {
+            Some(valuable::Value::String(v)) => self.name = Some(v.to_string()),
+            _ => {}
+        };
+    }
+}
+
+#[cfg_attr(feature = "valuable", derive(Valuable))]
 #[derive(Default, Serialize, Debug)]
 pub struct Age {
     pub ms: Option<i32>,
 }
 
+#[cfg(feature = "valuable")]
+impl valuable::Visit for Age {
+    fn visit_value(&mut self, value: valuable::Value<'_>) {
+        match value {
+            valuable::Value::Structable(v) => v.visit(self),
+            _ => {}
+        }
+    }
+
+    fn visit_named_fields(&mut self, named_values: &valuable::NamedValues<'_>) {
+        match named_values.get_by_name("ms") {
+            Some(valuable::Value::I32(v)) => self.ms = Some(*v),
+            _ => {}
+        };
+    }
+}
+
+#[cfg_attr(feature = "valuable", derive(Valuable))]
 #[derive(Default, Serialize, Debug)]
 pub struct Message {
     pub queue: Option<Queue>,
     pub age: Option<Age>,
     pub body: Option<String>,
-    pub headers: Option<FxHashMap<String, String>>,
+    pub headers: Option<Headers>,
+}
+
+#[cfg(feature = "valuable")]
+impl valuable::Visit for Message {
+    fn visit_value(&mut self, value: valuable::Value<'_>) {
+        match value {
+            valuable::Value::Structable(v) => v.visit(self),
+            _ => {}
+        }
+    }
+
+    fn visit_named_fields(&mut self, named_values: &valuable::NamedValues<'_>) {
+        match named_values.get_by_name("queue") {
+            Some(valuable::Value::Structable(v)) => {
+                let mut visit = Queue::default();
+                v.visit(&mut visit);
+                self.queue = Some(visit)
+            }
+            _ => {}
+        };
+        match named_values.get_by_name("age") {
+            Some(valuable::Value::Structable(v)) => {
+                let mut visit = Age::default();
+                v.visit(&mut visit);
+                self.age = Some(visit)
+            }
+            _ => {}
+        };
+        match named_values.get_by_name("body") {
+            Some(valuable::Value::String(v)) => self.body = Some(v.to_string()),
+            _ => {}
+        };
+        match named_values.get_by_name("headers") {
+            Some(valuable::Value::Mappable(headers)) => {
+                let mut visit = VisitHeaders {
+                    headers: HashMap::new(),
+                };
+                headers.visit(&mut visit);
+                self.headers = Some(visit.headers)
+            }
+            _ => {}
+        };
+    }
 }
 
 #[derive(Default, Serialize, Debug)]
@@ -270,10 +661,11 @@ pub struct Transaction {
     pub duration: f32,
     pub result: Option<String>,
     pub outcome: Option<Outcome>,
-    pub marks: Option<FxHashMap<String, FxHashMap<String, f32>>>,
+    pub marks: Option<Marks>,
     pub sampled: Option<bool>,
 }
 
+#[cfg_attr(feature = "valuable", derive(Valuable))]
 #[derive(Default, Serialize, Debug)]
 pub struct DestinationService {
     #[serde(rename = "type")]
@@ -282,6 +674,32 @@ pub struct DestinationService {
     pub resource: String,
 }
 
+#[cfg(feature = "valuable")]
+impl valuable::Visit for DestinationService {
+    fn visit_value(&mut self, value: valuable::Value<'_>) {
+        match value {
+            valuable::Value::Structable(v) => v.visit(self),
+            _ => {}
+        }
+    }
+
+    fn visit_named_fields(&mut self, named_values: &valuable::NamedValues<'_>) {
+        match named_values.get_by_name("service_type") {
+            Some(valuable::Value::String(v)) => self.service_type = v.to_string(),
+            _ => {}
+        };
+        match named_values.get_by_name("name") {
+            Some(valuable::Value::String(v)) => self.name = v.to_string(),
+            _ => {}
+        };
+        match named_values.get_by_name("resource") {
+            Some(valuable::Value::String(v)) => self.resource = v.to_string(),
+            _ => {}
+        };
+    }
+}
+
+#[cfg_attr(feature = "valuable", derive(Valuable))]
 #[derive(Default, Serialize, Debug)]
 pub struct Destination {
     pub address: Option<String>,
@@ -289,6 +707,36 @@ pub struct Destination {
     pub service: Option<DestinationService>,
 }
 
+#[cfg(feature = "valuable")]
+impl valuable::Visit for Destination {
+    fn visit_value(&mut self, value: valuable::Value<'_>) {
+        match value {
+            valuable::Value::Structable(v) => v.visit(self),
+            _ => {}
+        }
+    }
+
+    fn visit_named_fields(&mut self, named_values: &valuable::NamedValues<'_>) {
+        match named_values.get_by_name("address") {
+            Some(valuable::Value::String(v)) => self.address = Some(v.to_string()),
+            _ => {}
+        };
+        match named_values.get_by_name("port") {
+            Some(valuable::Value::I32(v)) => self.port = Some(*v),
+            _ => {}
+        };
+        match named_values.get_by_name("service") {
+            Some(valuable::Value::Structable(v)) => {
+                let mut visit = DestinationService::default();
+                v.visit(&mut visit);
+                self.service = Some(visit)
+            }
+            _ => {}
+        };
+    }
+}
+
+#[cfg_attr(feature = "valuable", derive(Valuable))]
 #[derive(Default, Serialize, Debug)]
 pub struct Db {
     pub instance: Option<String>,
@@ -299,7 +747,44 @@ pub struct Db {
     pub user: Option<String>,
     pub rows_affected: Option<i32>,
 }
+#[cfg(feature = "valuable")]
+impl valuable::Visit for Db {
+    fn visit_value(&mut self, value: valuable::Value<'_>) {
+        match value {
+            valuable::Value::Structable(v) => v.visit(self),
+            _ => {}
+        }
+    }
 
+    fn visit_named_fields(&mut self, named_values: &valuable::NamedValues<'_>) {
+        match named_values.get_by_name("instance") {
+            Some(valuable::Value::String(v)) => self.instance = Some(v.to_string()),
+            _ => {}
+        };
+        match named_values.get_by_name("link") {
+            Some(valuable::Value::String(v)) => self.link = Some(v.to_string()),
+            _ => {}
+        };
+        match named_values.get_by_name("statement") {
+            Some(valuable::Value::String(v)) => self.statement = Some(v.to_string()),
+            _ => {}
+        };
+        match named_values.get_by_name("db_type") {
+            Some(valuable::Value::String(v)) => self.db_type = Some(v.to_string()),
+            _ => {}
+        };
+        match named_values.get_by_name("user") {
+            Some(valuable::Value::String(v)) => self.user = Some(v.to_string()),
+            _ => {}
+        };
+        match named_values.get_by_name("rows_affected") {
+            Some(valuable::Value::I32(v)) => self.rows_affected = Some(*v),
+            _ => {}
+        };
+    }
+}
+
+#[cfg_attr(feature = "valuable", derive(Valuable))]
 #[derive(Default, Serialize, Debug)]
 pub struct Http {
     pub url: Option<String>,
@@ -308,6 +793,40 @@ pub struct Http {
     pub response: Option<Response>,
 }
 
+#[cfg(feature = "valuable")]
+impl valuable::Visit for Http {
+    fn visit_value(&mut self, value: valuable::Value<'_>) {
+        match value {
+            valuable::Value::Structable(v) => v.visit(self),
+            _ => {}
+        }
+    }
+
+    fn visit_named_fields(&mut self, named_values: &valuable::NamedValues<'_>) {
+        match named_values.get_by_name("url") {
+            Some(valuable::Value::String(v)) => self.url = Some(v.to_string()),
+            _ => {}
+        };
+        match named_values.get_by_name("status_code") {
+            Some(valuable::Value::I32(v)) => self.status_code = Some(*v),
+            _ => {}
+        };
+        match named_values.get_by_name("method") {
+            Some(valuable::Value::String(v)) => self.method = Some(v.to_string()),
+            _ => {}
+        };
+        match named_values.get_by_name("response") {
+            Some(valuable::Value::Structable(v)) => {
+                let mut visit = Response::default();
+                v.visit(&mut visit);
+                self.response = Some(visit)
+            }
+            _ => {}
+        };
+    }
+}
+
+#[cfg_attr(feature = "valuable", derive(Valuable))]
 #[derive(Default, Serialize, Debug)]
 pub struct Target {
     #[serde(rename = "type")]
@@ -315,6 +834,28 @@ pub struct Target {
     pub name: Option<String>,
 }
 
+#[cfg(feature = "valuable")]
+impl valuable::Visit for Target {
+    fn visit_value(&mut self, value: valuable::Value<'_>) {
+        match value {
+            valuable::Value::Structable(v) => v.visit(self),
+            _ => {}
+        }
+    }
+
+    fn visit_named_fields(&mut self, named_values: &valuable::NamedValues<'_>) {
+        match named_values.get_by_name("target_type") {
+            Some(valuable::Value::String(v)) => self.target_type = v.to_string(),
+            _ => {}
+        };
+        match named_values.get_by_name("name") {
+            Some(valuable::Value::String(v)) => self.name = Some(v.to_string()),
+            _ => {}
+        };
+    }
+}
+
+#[cfg_attr(feature = "valuable", derive(Valuable))]
 #[derive(Default, Serialize, Debug)]
 pub struct ServiceOrigin {
     pub id: Option<String>,
@@ -322,6 +863,32 @@ pub struct ServiceOrigin {
     pub version: Option<String>,
 }
 
+#[cfg(feature = "valuable")]
+impl valuable::Visit for ServiceOrigin {
+    fn visit_value(&mut self, value: valuable::Value<'_>) {
+        match value {
+            valuable::Value::Structable(v) => v.visit(self),
+            _ => {}
+        }
+    }
+
+    fn visit_named_fields(&mut self, named_values: &valuable::NamedValues<'_>) {
+        match named_values.get_by_name("id") {
+            Some(valuable::Value::String(v)) => self.id = Some(v.to_string()),
+            _ => {}
+        };
+        match named_values.get_by_name("name") {
+            Some(valuable::Value::String(v)) => self.name = Some(v.to_string()),
+            _ => {}
+        };
+        match named_values.get_by_name("version") {
+            Some(valuable::Value::String(v)) => self.version = Some(v.to_string()),
+            _ => {}
+        };
+    }
+}
+
+#[cfg_attr(feature = "valuable", derive(Valuable))]
 #[derive(Default, Serialize, Debug)]
 pub struct SpanService {
     pub agent: Option<Agent>,
@@ -335,6 +902,91 @@ pub struct SpanService {
     pub runtime: Option<Runtime>,
     pub target: Option<Target>,
     pub version: Option<String>,
+}
+
+#[cfg(feature = "valuable")]
+impl valuable::Visit for SpanService {
+    fn visit_value(&mut self, value: valuable::Value<'_>) {
+        match value {
+            valuable::Value::Structable(v) => v.visit(self),
+            _ => {}
+        }
+    }
+
+    fn visit_named_fields(&mut self, named_values: &valuable::NamedValues<'_>) {
+        match named_values.get_by_name("agent") {
+            Some(valuable::Value::Structable(v)) => {
+                let mut visit = Agent::default();
+                v.visit(&mut visit);
+                self.agent = Some(visit)
+            }
+            _ => {}
+        };
+        match named_values.get_by_name("environment") {
+            Some(valuable::Value::String(v)) => self.environment = Some(v.to_string()),
+            _ => {}
+        };
+        match named_values.get_by_name("framework") {
+            Some(valuable::Value::Structable(v)) => {
+                let mut visit = Framework::default();
+                v.visit(&mut visit);
+                self.framework = Some(visit)
+            }
+            _ => {}
+        };
+        match named_values.get_by_name("id") {
+            Some(valuable::Value::String(v)) => self.id = Some(v.to_string()),
+            _ => {}
+        };
+        match named_values.get_by_name("language") {
+            Some(valuable::Value::Structable(v)) => {
+                let mut visit = Language::default();
+                v.visit(&mut visit);
+                self.language = Some(visit)
+            }
+            _ => {}
+        };
+        match named_values.get_by_name("name") {
+            Some(valuable::Value::String(v)) => self.name = Some(v.to_string()),
+            _ => {}
+        };
+        match named_values.get_by_name("node") {
+            Some(valuable::Value::Structable(v)) => {
+                let mut visit = ServiceNode::default();
+                v.visit(&mut visit);
+                self.node = Some(visit)
+            }
+            _ => {}
+        };
+        match named_values.get_by_name("origin") {
+            Some(valuable::Value::Structable(v)) => {
+                let mut visit = ServiceOrigin::default();
+                v.visit(&mut visit);
+                self.origin = Some(visit)
+            }
+            _ => {}
+        };
+        match named_values.get_by_name("runtime") {
+            Some(valuable::Value::Structable(v)) => {
+                let mut visit = Runtime::default();
+                v.visit(&mut visit);
+                self.runtime = Some(visit)
+            }
+            _ => {}
+        };
+        match named_values.get_by_name("target") {
+            Some(valuable::Value::Structable(v)) => {
+                let mut visit = Target::default();
+                v.visit(&mut visit);
+                self.target = Some(visit)
+            }
+            _ => {}
+        };
+        match named_values.get_by_name("version") {
+            Some(valuable::Value::String(v)) => self.version = Some(v.to_string()),
+            _ => {}
+        };
+    }
 }
 
 #[derive(Default, Serialize, Debug)]
@@ -404,4 +1056,41 @@ pub struct Error {
     pub culprit: Option<String>,
     pub exception: Option<Exception>,
     pub log: Option<Log>,
+}
+
+#[cfg(all(test, feature = "valuable"))]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_request() {
+        let request = Request {
+            headers: Some(HashMap::from([
+                ("key".to_string(), "value".to_string()),
+                ("key2".to_string(), "value2".to_string()),
+            ])),
+            method: "method".to_string(),
+            url: Url {
+                raw: Some("http://full:9090/path".to_string()),
+                protocol: Some("http:".to_string()),
+                hostname: Some("full:".to_string()),
+                port: Some(9090),
+                pathname: Some("/path".to_string()),
+                ..Default::default()
+            },
+            ..Default::default()
+        };
+
+        let encoded = request.as_value();
+        let mut decoded = Request::default();
+        valuable::visit(&encoded, &mut decoded);
+
+        assert_eq!(request.headers, decoded.headers);
+        assert_eq!(request.method, decoded.method);
+
+        assert_eq!(request.url.raw, decoded.url.raw);
+        assert_eq!(request.url.port, decoded.url.port);
+        assert_eq!(request.url.pathname, decoded.url.pathname);
+        assert_eq!(request.url.hostname, decoded.url.hostname);
+    }
 }
