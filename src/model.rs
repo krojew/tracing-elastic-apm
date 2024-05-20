@@ -309,9 +309,32 @@ pub struct Http {
 }
 
 #[derive(Default, Serialize, Debug)]
+pub struct Target {
+    #[serde(rename = "type")]
+    pub target_type: String,
+    pub name: Option<String>,
+}
+
+#[derive(Default, Serialize, Debug)]
+pub struct ServiceOrigin {
+    pub id: Option<String>,
+    pub name: Option<String>,
+    pub version: Option<String>,
+}
+
+#[derive(Default, Serialize, Debug)]
 pub struct SpanService {
     pub agent: Option<Agent>,
+    pub environment: Option<String>,
+    pub framework: Option<Framework>,
+    pub id: Option<String>,
+    pub language: Option<Language>,
     pub name: Option<String>,
+    pub node: Option<ServiceNode>,
+    pub origin: Option<ServiceOrigin>,
+    pub runtime: Option<Runtime>,
+    pub target: Option<Target>,
+    pub version: Option<String>,
 }
 
 #[derive(Default, Serialize, Debug)]
