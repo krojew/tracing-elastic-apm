@@ -18,7 +18,7 @@ use crate::{
 
 #[derive(Copy, Clone)]
 struct TraceContext {
-    pub trace_id: u64,
+    pub trace_id: u128,
 }
 
 struct SpanContext {
