@@ -28,18 +28,14 @@ struct VisitHeaders {
 #[cfg(feature = "valuable")]
 impl valuable::Visit for VisitHeaders {
     fn visit_value(&mut self, value: valuable::Value<'_>) {
-        match value {
-            valuable::Value::Mappable(v) => v.visit(self),
-            _ => {}
+        if let valuable::Value::Mappable(v) = value {
+            v.visit(self)
         }
     }
 
     fn visit_entry(&mut self, key: valuable::Value<'_>, value: valuable::Value<'_>) {
-        match (key, value) {
-            (valuable::Value::String(k), valuable::Value::String(v)) => {
-                self.headers.insert(k.to_string(), v.to_string());
-            }
-            _ => {}
+        if let (valuable::Value::String(k), valuable::Value::String(v)) = (key, value) {
+            self.headers.insert(k.to_string(), v.to_string());
         }
     }
 }
@@ -60,20 +56,17 @@ pub struct Language {
 #[cfg(feature = "valuable")]
 impl valuable::Visit for Language {
     fn visit_value(&mut self, value: valuable::Value<'_>) {
-        match value {
-            valuable::Value::Structable(v) => v.visit(self),
-            _ => {}
+        if let valuable::Value::Structable(v) = value {
+            v.visit(self)
         }
     }
 
     fn visit_named_fields(&mut self, named_values: &valuable::NamedValues<'_>) {
-        match named_values.get_by_name("name") {
-            Some(valuable::Value::String(v)) => self.name = v.to_string(),
-            _ => {}
+        if let Some(valuable::Value::String(v)) = named_values.get_by_name("name") {
+            self.name = v.to_string()
         };
-        match named_values.get_by_name("version") {
-            Some(valuable::Value::String(v)) => self.version = Some(v.to_string()),
-            _ => {}
+        if let Some(valuable::Value::String(v)) = named_values.get_by_name("version") {
+            self.version = Some(v.to_string())
         };
     }
 }
@@ -89,20 +82,17 @@ pub struct Runtime {
 #[cfg(feature = "valuable")]
 impl valuable::Visit for Runtime {
     fn visit_value(&mut self, value: valuable::Value<'_>) {
-        match value {
-            valuable::Value::Structable(v) => v.visit(self),
-            _ => {}
+        if let valuable::Value::Structable(v) = value {
+            v.visit(self)
         }
     }
 
     fn visit_named_fields(&mut self, named_values: &valuable::NamedValues<'_>) {
-        match named_values.get_by_name("name") {
-            Some(valuable::Value::String(v)) => self.name = v.to_string(),
-            _ => {}
+        if let Some(valuable::Value::String(v)) = named_values.get_by_name("name") {
+            self.name = v.to_string()
         };
-        match named_values.get_by_name("version") {
-            Some(valuable::Value::String(v)) => self.version = v.to_string(),
-            _ => {}
+        if let Some(valuable::Value::String(v)) = named_values.get_by_name("version") {
+            self.version = v.to_string()
         };
     }
 }
@@ -118,20 +108,17 @@ pub struct Framework {
 #[cfg(feature = "valuable")]
 impl valuable::Visit for Framework {
     fn visit_value(&mut self, value: valuable::Value<'_>) {
-        match value {
-            valuable::Value::Structable(v) => v.visit(self),
-            _ => {}
+        if let valuable::Value::Structable(v) = value {
+            v.visit(self)
         }
     }
 
     fn visit_named_fields(&mut self, named_values: &valuable::NamedValues<'_>) {
-        match named_values.get_by_name("name") {
-            Some(valuable::Value::String(v)) => self.name = Some(v.to_string()),
-            _ => {}
+        if let Some(valuable::Value::String(v)) = named_values.get_by_name("name") {
+            self.name = Some(v.to_string())
         };
-        match named_values.get_by_name("version") {
-            Some(valuable::Value::String(v)) => self.version = Some(v.to_string()),
-            _ => {}
+        if let Some(valuable::Value::String(v)) = named_values.get_by_name("version") {
+            self.version = Some(v.to_string())
         };
     }
 }
@@ -147,24 +134,20 @@ pub struct Agent {
 #[cfg(feature = "valuable")]
 impl valuable::Visit for Agent {
     fn visit_value(&mut self, value: valuable::Value<'_>) {
-        match value {
-            valuable::Value::Structable(v) => v.visit(self),
-            _ => {}
+        if let valuable::Value::Structable(v) = value {
+            v.visit(self)
         }
     }
 
     fn visit_named_fields(&mut self, named_values: &valuable::NamedValues<'_>) {
-        match named_values.get_by_name("name") {
-            Some(valuable::Value::String(v)) => self.name = v.to_string(),
-            _ => {}
+        if let Some(valuable::Value::String(v)) = named_values.get_by_name("name") {
+            self.name = v.to_string()
         };
-        match named_values.get_by_name("version") {
-            Some(valuable::Value::String(v)) => self.version = v.to_string(),
-            _ => {}
+        if let Some(valuable::Value::String(v)) = named_values.get_by_name("version") {
+            self.version = v.to_string()
         };
-        match named_values.get_by_name("ephemeral_id") {
-            Some(valuable::Value::String(v)) => self.ephemeral_id = Some(v.to_string()),
-            _ => {}
+        if let Some(valuable::Value::String(v)) = named_values.get_by_name("ephemeral_id") {
+            self.ephemeral_id = Some(v.to_string())
         };
     }
 }
@@ -179,16 +162,14 @@ pub struct ServiceNode {
 #[cfg(feature = "valuable")]
 impl valuable::Visit for ServiceNode {
     fn visit_value(&mut self, value: valuable::Value<'_>) {
-        match value {
-            valuable::Value::Structable(v) => v.visit(self),
-            _ => {}
+        if let valuable::Value::Structable(v) = value {
+            v.visit(self)
         }
     }
 
     fn visit_named_fields(&mut self, named_values: &valuable::NamedValues<'_>) {
-        match named_values.get_by_name("configured_name") {
-            Some(valuable::Value::String(v)) => self.configured_name = Some(v.to_string()),
-            _ => {}
+        if let Some(valuable::Value::String(v)) = named_values.get_by_name("configured_name") {
+            self.configured_name = Some(v.to_string())
         };
     }
 }
@@ -340,38 +321,30 @@ pub struct Response {
 #[cfg(feature = "valuable")]
 impl valuable::Visit for Response {
     fn visit_value(&mut self, value: valuable::Value<'_>) {
-        match value {
-            valuable::Value::Structable(v) => v.visit(self),
-            _ => {}
+        if let valuable::Value::Structable(v) = value {
+            v.visit(self)
         }
     }
 
     fn visit_named_fields(&mut self, named_values: &valuable::NamedValues<'_>) {
-        match named_values.get_by_name("status_code") {
-            Some(valuable::Value::I32(v)) => self.status_code = Some(*v),
-            _ => {}
+        if let Some(valuable::Value::I32(v)) = named_values.get_by_name("status_code") {
+            self.status_code = Some(*v)
         };
-        match named_values.get_by_name("transfer_size") {
-            Some(valuable::Value::F32(v)) => self.transfer_size = Some(*v),
-            _ => {}
+        if let Some(valuable::Value::F32(v)) = named_values.get_by_name("transfer_size") {
+            self.transfer_size = Some(*v)
         };
-        match named_values.get_by_name("encoded_body_size") {
-            Some(valuable::Value::F32(v)) => self.encoded_body_size = Some(*v),
-            _ => {}
+        if let Some(valuable::Value::F32(v)) = named_values.get_by_name("encoded_body_size") {
+            self.encoded_body_size = Some(*v)
         };
-        match named_values.get_by_name("decoded_body_size") {
-            Some(valuable::Value::F32(v)) => self.decoded_body_size = Some(*v),
-            _ => {}
+        if let Some(valuable::Value::F32(v)) = named_values.get_by_name("decoded_body_size") {
+            self.decoded_body_size = Some(*v)
         };
-        match named_values.get_by_name("headers") {
-            Some(valuable::Value::Mappable(headers)) => {
-                let mut visit = VisitHeaders {
-                    headers: HashMap::new(),
-                };
-                headers.visit(&mut visit);
-                self.headers = Some(visit.headers)
-            }
-            _ => {}
+        if let Some(valuable::Value::Mappable(headers)) = named_values.get_by_name("headers") {
+            let mut visit = VisitHeaders {
+                headers: HashMap::new(),
+            };
+            headers.visit(&mut visit);
+            self.headers = Some(visit.headers)
         };
     }
 }
@@ -386,20 +359,17 @@ pub struct Socket {
 #[cfg(feature = "valuable")]
 impl valuable::Visit for Socket {
     fn visit_value(&mut self, value: valuable::Value<'_>) {
-        match value {
-            valuable::Value::Structable(v) => v.visit(self),
-            _ => {}
+        if let valuable::Value::Structable(v) = value {
+            v.visit(self)
         }
     }
 
     fn visit_named_fields(&mut self, named_values: &valuable::NamedValues<'_>) {
-        match named_values.get_by_name("encrypted") {
-            Some(valuable::Value::Bool(v)) => self.encrypted = Some(*v),
-            _ => {}
+        if let Some(valuable::Value::Bool(v)) = named_values.get_by_name("encrypted") {
+            self.encrypted = Some(*v)
         };
-        match named_values.get_by_name("remote_address") {
-            Some(valuable::Value::String(v)) => self.remote_address = Some(v.to_string()),
-            _ => {}
+        if let Some(valuable::Value::String(v)) = named_values.get_by_name("remote_address") {
+            self.remote_address = Some(v.to_string())
         };
     }
 }
@@ -420,44 +390,35 @@ pub struct Url {
 #[cfg(feature = "valuable")]
 impl valuable::Visit for Url {
     fn visit_value(&mut self, value: valuable::Value<'_>) {
-        match value {
-            valuable::Value::Structable(v) => v.visit(self),
-            _ => {}
+        if let valuable::Value::Structable(v) = value {
+            v.visit(self)
         }
     }
 
     fn visit_named_fields(&mut self, named_values: &valuable::NamedValues<'_>) {
-        match named_values.get_by_name("raw") {
-            Some(valuable::Value::String(v)) => self.raw = Some(v.to_string()),
-            _ => {}
+        if let Some(valuable::Value::String(v)) = named_values.get_by_name("raw") {
+            self.raw = Some(v.to_string())
         }
-        match named_values.get_by_name("protocol") {
-            Some(valuable::Value::String(v)) => self.protocol = Some(v.to_string()),
-            _ => {}
+        if let Some(valuable::Value::String(v)) = named_values.get_by_name("protocol") {
+            self.protocol = Some(v.to_string())
         }
-        match named_values.get_by_name("full") {
-            Some(valuable::Value::String(v)) => self.full = Some(v.to_string()),
-            _ => {}
+        if let Some(valuable::Value::String(v)) = named_values.get_by_name("full") {
+            self.full = Some(v.to_string())
         }
-        match named_values.get_by_name("hostname") {
-            Some(valuable::Value::String(v)) => self.hostname = Some(v.to_string()),
-            _ => {}
+        if let Some(valuable::Value::String(v)) = named_values.get_by_name("hostname") {
+            self.hostname = Some(v.to_string())
         }
-        match named_values.get_by_name("port") {
-            Some(valuable::Value::I32(v)) => self.port = Some(*v),
-            _ => {}
+        if let Some(valuable::Value::I32(v)) = named_values.get_by_name("port") {
+            self.port = Some(*v)
         }
-        match named_values.get_by_name("pathname") {
-            Some(valuable::Value::String(v)) => self.pathname = Some(v.to_string()),
-            _ => {}
+        if let Some(valuable::Value::String(v)) = named_values.get_by_name("pathname") {
+            self.pathname = Some(v.to_string())
         }
-        match named_values.get_by_name("search") {
-            Some(valuable::Value::String(v)) => self.search = Some(v.to_string()),
-            _ => {}
+        if let Some(valuable::Value::String(v)) = named_values.get_by_name("search") {
+            self.search = Some(v.to_string())
         }
-        match named_values.get_by_name("hash") {
-            Some(valuable::Value::String(v)) => self.hash = Some(v.to_string()),
-            _ => {}
+        if let Some(valuable::Value::String(v)) = named_values.get_by_name("hash") {
+            self.hash = Some(v.to_string())
         }
     }
 }
@@ -476,48 +437,35 @@ pub struct Request {
 #[cfg(feature = "valuable")]
 impl valuable::Visit for Request {
     fn visit_value(&mut self, value: valuable::Value<'_>) {
-        match value {
-            valuable::Value::Structable(v) => v.visit(self),
-            _ => {}
+        if let valuable::Value::Structable(v) = value {
+            v.visit(self)
         }
     }
 
     fn visit_named_fields(&mut self, named_values: &valuable::NamedValues<'_>) {
-        match named_values.get_by_name("body") {
-            Some(valuable::Value::String(v)) => self.body = Some(v.to_string()),
-            _ => {}
+        if let Some(valuable::Value::String(v)) = named_values.get_by_name("body") {
+            self.body = Some(v.to_string())
         };
-        match named_values.get_by_name("headers") {
-            Some(valuable::Value::Mappable(headers)) => {
-                let mut visit = VisitHeaders {
-                    headers: HashMap::new(),
-                };
-                headers.visit(&mut visit);
-                self.headers = Some(visit.headers)
-            }
-            _ => {}
+        if let Some(valuable::Value::Mappable(headers)) = named_values.get_by_name("headers") {
+            let mut visit = VisitHeaders {
+                headers: HashMap::new(),
+            };
+            headers.visit(&mut visit);
+            self.headers = Some(visit.headers)
         };
-        match named_values.get_by_name("http_version") {
-            Some(valuable::Value::String(v)) => self.http_version = Some(v.to_string()),
-            _ => {}
+        if let Some(valuable::Value::String(v)) = named_values.get_by_name("http_version") {
+            self.http_version = Some(v.to_string())
         };
-        match named_values.get_by_name("method") {
-            Some(valuable::Value::String(v)) => self.method = v.to_string(),
-            _ => {}
+        if let Some(valuable::Value::String(v)) = named_values.get_by_name("method") {
+            self.method = v.to_string()
         };
-        match named_values.get_by_name("socket") {
-            Some(valuable::Value::Structable(socket)) => {
-                let mut visit_socket = Socket::default();
-                socket.visit(&mut visit_socket);
-                self.socket = Some(visit_socket);
-            }
-            _ => {}
+        if let Some(valuable::Value::Structable(socket)) = named_values.get_by_name("socket") {
+            let mut visit_socket = Socket::default();
+            socket.visit(&mut visit_socket);
+            self.socket = Some(visit_socket);
         };
-        match named_values.get_by_name("url") {
-            Some(valuable::Value::Structable(url)) => {
-                url.visit(&mut self.url);
-            }
-            _ => {}
+        if let Some(valuable::Value::Structable(url)) = named_values.get_by_name("url") {
+            url.visit(&mut self.url);
         };
     }
 }
@@ -537,16 +485,14 @@ pub struct Queue {
 #[cfg(feature = "valuable")]
 impl valuable::Visit for Queue {
     fn visit_value(&mut self, value: valuable::Value<'_>) {
-        match value {
-            valuable::Value::Structable(v) => v.visit(self),
-            _ => {}
+        if let valuable::Value::Structable(v) = value {
+            v.visit(self)
         }
     }
 
     fn visit_named_fields(&mut self, named_values: &valuable::NamedValues<'_>) {
-        match named_values.get_by_name("name") {
-            Some(valuable::Value::String(v)) => self.name = Some(v.to_string()),
-            _ => {}
+        if let Some(valuable::Value::String(v)) = named_values.get_by_name("name") {
+            self.name = Some(v.to_string())
         };
     }
 }
@@ -560,16 +506,14 @@ pub struct Age {
 #[cfg(feature = "valuable")]
 impl valuable::Visit for Age {
     fn visit_value(&mut self, value: valuable::Value<'_>) {
-        match value {
-            valuable::Value::Structable(v) => v.visit(self),
-            _ => {}
+        if let valuable::Value::Structable(v) = value {
+            v.visit(self)
         }
     }
 
     fn visit_named_fields(&mut self, named_values: &valuable::NamedValues<'_>) {
-        match named_values.get_by_name("ms") {
-            Some(valuable::Value::I32(v)) => self.ms = Some(*v),
-            _ => {}
+        if let Some(valuable::Value::I32(v)) = named_values.get_by_name("ms") {
+            self.ms = Some(*v)
         };
     }
 }
@@ -586,42 +530,31 @@ pub struct Message {
 #[cfg(feature = "valuable")]
 impl valuable::Visit for Message {
     fn visit_value(&mut self, value: valuable::Value<'_>) {
-        match value {
-            valuable::Value::Structable(v) => v.visit(self),
-            _ => {}
+        if let valuable::Value::Structable(v) = value {
+            v.visit(self)
         }
     }
 
     fn visit_named_fields(&mut self, named_values: &valuable::NamedValues<'_>) {
-        match named_values.get_by_name("queue") {
-            Some(valuable::Value::Structable(v)) => {
-                let mut visit = Queue::default();
-                v.visit(&mut visit);
-                self.queue = Some(visit)
-            }
-            _ => {}
+        if let Some(valuable::Value::Structable(v)) = named_values.get_by_name("queue") {
+            let mut visit = Queue::default();
+            v.visit(&mut visit);
+            self.queue = Some(visit)
         };
-        match named_values.get_by_name("age") {
-            Some(valuable::Value::Structable(v)) => {
-                let mut visit = Age::default();
-                v.visit(&mut visit);
-                self.age = Some(visit)
-            }
-            _ => {}
+        if let Some(valuable::Value::Structable(v)) = named_values.get_by_name("age") {
+            let mut visit = Age::default();
+            v.visit(&mut visit);
+            self.age = Some(visit)
         };
-        match named_values.get_by_name("body") {
-            Some(valuable::Value::String(v)) => self.body = Some(v.to_string()),
-            _ => {}
+        if let Some(valuable::Value::String(v)) = named_values.get_by_name("body") {
+            self.body = Some(v.to_string())
         };
-        match named_values.get_by_name("headers") {
-            Some(valuable::Value::Mappable(headers)) => {
-                let mut visit = VisitHeaders {
-                    headers: HashMap::new(),
-                };
-                headers.visit(&mut visit);
-                self.headers = Some(visit.headers)
-            }
-            _ => {}
+        if let Some(valuable::Value::Mappable(headers)) = named_values.get_by_name("headers") {
+            let mut visit = VisitHeaders {
+                headers: HashMap::new(),
+            };
+            headers.visit(&mut visit);
+            self.headers = Some(visit.headers)
         };
     }
 }
@@ -677,24 +610,20 @@ pub struct DestinationService {
 #[cfg(feature = "valuable")]
 impl valuable::Visit for DestinationService {
     fn visit_value(&mut self, value: valuable::Value<'_>) {
-        match value {
-            valuable::Value::Structable(v) => v.visit(self),
-            _ => {}
+        if let valuable::Value::Structable(v) = value {
+            v.visit(self)
         }
     }
 
     fn visit_named_fields(&mut self, named_values: &valuable::NamedValues<'_>) {
-        match named_values.get_by_name("service_type") {
-            Some(valuable::Value::String(v)) => self.service_type = v.to_string(),
-            _ => {}
+        if let Some(valuable::Value::String(v)) = named_values.get_by_name("service_type") {
+            self.service_type = v.to_string()
         };
-        match named_values.get_by_name("name") {
-            Some(valuable::Value::String(v)) => self.name = v.to_string(),
-            _ => {}
+        if let Some(valuable::Value::String(v)) = named_values.get_by_name("name") {
+            self.name = v.to_string()
         };
-        match named_values.get_by_name("resource") {
-            Some(valuable::Value::String(v)) => self.resource = v.to_string(),
-            _ => {}
+        if let Some(valuable::Value::String(v)) = named_values.get_by_name("resource") {
+            self.resource = v.to_string()
         };
     }
 }
@@ -710,28 +639,22 @@ pub struct Destination {
 #[cfg(feature = "valuable")]
 impl valuable::Visit for Destination {
     fn visit_value(&mut self, value: valuable::Value<'_>) {
-        match value {
-            valuable::Value::Structable(v) => v.visit(self),
-            _ => {}
+        if let valuable::Value::Structable(v) = value {
+            v.visit(self)
         }
     }
 
     fn visit_named_fields(&mut self, named_values: &valuable::NamedValues<'_>) {
-        match named_values.get_by_name("address") {
-            Some(valuable::Value::String(v)) => self.address = Some(v.to_string()),
-            _ => {}
+        if let Some(valuable::Value::String(v)) = named_values.get_by_name("address") {
+            self.address = Some(v.to_string())
         };
-        match named_values.get_by_name("port") {
-            Some(valuable::Value::I32(v)) => self.port = Some(*v),
-            _ => {}
+        if let Some(valuable::Value::I32(v)) = named_values.get_by_name("port") {
+            self.port = Some(*v)
         };
-        match named_values.get_by_name("service") {
-            Some(valuable::Value::Structable(v)) => {
-                let mut visit = DestinationService::default();
-                v.visit(&mut visit);
-                self.service = Some(visit)
-            }
-            _ => {}
+        if let Some(valuable::Value::Structable(v)) = named_values.get_by_name("service") {
+            let mut visit = DestinationService::default();
+            v.visit(&mut visit);
+            self.service = Some(visit)
         };
     }
 }
@@ -750,36 +673,29 @@ pub struct Db {
 #[cfg(feature = "valuable")]
 impl valuable::Visit for Db {
     fn visit_value(&mut self, value: valuable::Value<'_>) {
-        match value {
-            valuable::Value::Structable(v) => v.visit(self),
-            _ => {}
+        if let valuable::Value::Structable(v) = value {
+            v.visit(self)
         }
     }
 
     fn visit_named_fields(&mut self, named_values: &valuable::NamedValues<'_>) {
-        match named_values.get_by_name("instance") {
-            Some(valuable::Value::String(v)) => self.instance = Some(v.to_string()),
-            _ => {}
+        if let Some(valuable::Value::String(v)) = named_values.get_by_name("instance") {
+            self.instance = Some(v.to_string())
         };
-        match named_values.get_by_name("link") {
-            Some(valuable::Value::String(v)) => self.link = Some(v.to_string()),
-            _ => {}
+        if let Some(valuable::Value::String(v)) = named_values.get_by_name("link") {
+            self.link = Some(v.to_string())
         };
-        match named_values.get_by_name("statement") {
-            Some(valuable::Value::String(v)) => self.statement = Some(v.to_string()),
-            _ => {}
+        if let Some(valuable::Value::String(v)) = named_values.get_by_name("statement") {
+            self.statement = Some(v.to_string())
         };
-        match named_values.get_by_name("db_type") {
-            Some(valuable::Value::String(v)) => self.db_type = Some(v.to_string()),
-            _ => {}
+        if let Some(valuable::Value::String(v)) = named_values.get_by_name("db_type") {
+            self.db_type = Some(v.to_string())
         };
-        match named_values.get_by_name("user") {
-            Some(valuable::Value::String(v)) => self.user = Some(v.to_string()),
-            _ => {}
+        if let Some(valuable::Value::String(v)) = named_values.get_by_name("user") {
+            self.user = Some(v.to_string())
         };
-        match named_values.get_by_name("rows_affected") {
-            Some(valuable::Value::I32(v)) => self.rows_affected = Some(*v),
-            _ => {}
+        if let Some(valuable::Value::I32(v)) = named_values.get_by_name("rows_affected") {
+            self.rows_affected = Some(*v)
         };
     }
 }
@@ -796,32 +712,25 @@ pub struct Http {
 #[cfg(feature = "valuable")]
 impl valuable::Visit for Http {
     fn visit_value(&mut self, value: valuable::Value<'_>) {
-        match value {
-            valuable::Value::Structable(v) => v.visit(self),
-            _ => {}
+        if let valuable::Value::Structable(v) = value {
+            v.visit(self)
         }
     }
 
     fn visit_named_fields(&mut self, named_values: &valuable::NamedValues<'_>) {
-        match named_values.get_by_name("url") {
-            Some(valuable::Value::String(v)) => self.url = Some(v.to_string()),
-            _ => {}
+        if let Some(valuable::Value::String(v)) = named_values.get_by_name("url") {
+            self.url = Some(v.to_string())
         };
-        match named_values.get_by_name("status_code") {
-            Some(valuable::Value::I32(v)) => self.status_code = Some(*v),
-            _ => {}
+        if let Some(valuable::Value::I32(v)) = named_values.get_by_name("status_code") {
+            self.status_code = Some(*v)
         };
-        match named_values.get_by_name("method") {
-            Some(valuable::Value::String(v)) => self.method = Some(v.to_string()),
-            _ => {}
+        if let Some(valuable::Value::String(v)) = named_values.get_by_name("method") {
+            self.method = Some(v.to_string())
         };
-        match named_values.get_by_name("response") {
-            Some(valuable::Value::Structable(v)) => {
-                let mut visit = Response::default();
-                v.visit(&mut visit);
-                self.response = Some(visit)
-            }
-            _ => {}
+        if let Some(valuable::Value::Structable(v)) = named_values.get_by_name("response") {
+            let mut visit = Response::default();
+            v.visit(&mut visit);
+            self.response = Some(visit)
         };
     }
 }
@@ -837,20 +746,17 @@ pub struct Target {
 #[cfg(feature = "valuable")]
 impl valuable::Visit for Target {
     fn visit_value(&mut self, value: valuable::Value<'_>) {
-        match value {
-            valuable::Value::Structable(v) => v.visit(self),
-            _ => {}
+        if let valuable::Value::Structable(v) = value {
+            v.visit(self)
         }
     }
 
     fn visit_named_fields(&mut self, named_values: &valuable::NamedValues<'_>) {
-        match named_values.get_by_name("target_type") {
-            Some(valuable::Value::String(v)) => self.target_type = v.to_string(),
-            _ => {}
+        if let Some(valuable::Value::String(v)) = named_values.get_by_name("target_type") {
+            self.target_type = v.to_string()
         };
-        match named_values.get_by_name("name") {
-            Some(valuable::Value::String(v)) => self.name = Some(v.to_string()),
-            _ => {}
+        if let Some(valuable::Value::String(v)) = named_values.get_by_name("name") {
+            self.name = Some(v.to_string())
         };
     }
 }
@@ -866,24 +772,20 @@ pub struct ServiceOrigin {
 #[cfg(feature = "valuable")]
 impl valuable::Visit for ServiceOrigin {
     fn visit_value(&mut self, value: valuable::Value<'_>) {
-        match value {
-            valuable::Value::Structable(v) => v.visit(self),
-            _ => {}
+        if let valuable::Value::Structable(v) = value {
+            v.visit(self)
         }
     }
 
     fn visit_named_fields(&mut self, named_values: &valuable::NamedValues<'_>) {
-        match named_values.get_by_name("id") {
-            Some(valuable::Value::String(v)) => self.id = Some(v.to_string()),
-            _ => {}
+        if let Some(valuable::Value::String(v)) = named_values.get_by_name("id") {
+            self.id = Some(v.to_string())
         };
-        match named_values.get_by_name("name") {
-            Some(valuable::Value::String(v)) => self.name = Some(v.to_string()),
-            _ => {}
+        if let Some(valuable::Value::String(v)) = named_values.get_by_name("name") {
+            self.name = Some(v.to_string())
         };
-        match named_values.get_by_name("version") {
-            Some(valuable::Value::String(v)) => self.version = Some(v.to_string()),
-            _ => {}
+        if let Some(valuable::Value::String(v)) = named_values.get_by_name("version") {
+            self.version = Some(v.to_string())
         };
     }
 }
@@ -907,84 +809,58 @@ pub struct SpanService {
 #[cfg(feature = "valuable")]
 impl valuable::Visit for SpanService {
     fn visit_value(&mut self, value: valuable::Value<'_>) {
-        match value {
-            valuable::Value::Structable(v) => v.visit(self),
-            _ => {}
+        if let valuable::Value::Structable(v) = value {
+            v.visit(self)
         }
     }
 
     fn visit_named_fields(&mut self, named_values: &valuable::NamedValues<'_>) {
-        match named_values.get_by_name("agent") {
-            Some(valuable::Value::Structable(v)) => {
-                let mut visit = Agent::default();
-                v.visit(&mut visit);
-                self.agent = Some(visit)
-            }
-            _ => {}
+        if let Some(valuable::Value::Structable(v)) = named_values.get_by_name("agent") {
+            let mut visit = Agent::default();
+            v.visit(&mut visit);
+            self.agent = Some(visit)
         };
-        match named_values.get_by_name("environment") {
-            Some(valuable::Value::String(v)) => self.environment = Some(v.to_string()),
-            _ => {}
+        if let Some(valuable::Value::String(v)) = named_values.get_by_name("environment") {
+            self.environment = Some(v.to_string())
         };
-        match named_values.get_by_name("framework") {
-            Some(valuable::Value::Structable(v)) => {
-                let mut visit = Framework::default();
-                v.visit(&mut visit);
-                self.framework = Some(visit)
-            }
-            _ => {}
+        if let Some(valuable::Value::Structable(v)) = named_values.get_by_name("framework") {
+            let mut visit = Framework::default();
+            v.visit(&mut visit);
+            self.framework = Some(visit)
         };
-        match named_values.get_by_name("id") {
-            Some(valuable::Value::String(v)) => self.id = Some(v.to_string()),
-            _ => {}
+        if let Some(valuable::Value::String(v)) = named_values.get_by_name("id") {
+            self.id = Some(v.to_string())
         };
-        match named_values.get_by_name("language") {
-            Some(valuable::Value::Structable(v)) => {
-                let mut visit = Language::default();
-                v.visit(&mut visit);
-                self.language = Some(visit)
-            }
-            _ => {}
+        if let Some(valuable::Value::Structable(v)) = named_values.get_by_name("language") {
+            let mut visit = Language::default();
+            v.visit(&mut visit);
+            self.language = Some(visit)
         };
-        match named_values.get_by_name("name") {
-            Some(valuable::Value::String(v)) => self.name = Some(v.to_string()),
-            _ => {}
+        if let Some(valuable::Value::String(v)) = named_values.get_by_name("name") {
+            self.name = Some(v.to_string())
         };
-        match named_values.get_by_name("node") {
-            Some(valuable::Value::Structable(v)) => {
-                let mut visit = ServiceNode::default();
-                v.visit(&mut visit);
-                self.node = Some(visit)
-            }
-            _ => {}
+        if let Some(valuable::Value::Structable(v)) = named_values.get_by_name("node") {
+            let mut visit = ServiceNode::default();
+            v.visit(&mut visit);
+            self.node = Some(visit)
         };
-        match named_values.get_by_name("origin") {
-            Some(valuable::Value::Structable(v)) => {
-                let mut visit = ServiceOrigin::default();
-                v.visit(&mut visit);
-                self.origin = Some(visit)
-            }
-            _ => {}
+        if let Some(valuable::Value::Structable(v)) = named_values.get_by_name("origin") {
+            let mut visit = ServiceOrigin::default();
+            v.visit(&mut visit);
+            self.origin = Some(visit)
         };
-        match named_values.get_by_name("runtime") {
-            Some(valuable::Value::Structable(v)) => {
-                let mut visit = Runtime::default();
-                v.visit(&mut visit);
-                self.runtime = Some(visit)
-            }
-            _ => {}
+        if let Some(valuable::Value::Structable(v)) = named_values.get_by_name("runtime") {
+            let mut visit = Runtime::default();
+            v.visit(&mut visit);
+            self.runtime = Some(visit)
         };
-        match named_values.get_by_name("target") {
-            Some(valuable::Value::Structable(v)) => {
-                let mut visit = Target::default();
-                v.visit(&mut visit);
-                self.target = Some(visit)
-            }
-            _ => {}
+        if let Some(valuable::Value::Structable(v)) = named_values.get_by_name("target") {
+            let mut visit = Target::default();
+            v.visit(&mut visit);
+            self.target = Some(visit)
         };
-        match named_values.get_by_name("version") {
-            Some(valuable::Value::String(v)) => self.version = Some(v.to_string()),
-            _ => {}
+        if let Some(valuable::Value::String(v)) = named_values.get_by_name("version") {
+            self.version = Some(v.to_string())
         };
     }
 }
