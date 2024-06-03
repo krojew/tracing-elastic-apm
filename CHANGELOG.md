@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.4.0]
+
+- Optional `valuable` feature to allow populating context fields (by Leonidas
+  Loucas).
+- Updated APM model (by Leonidas Loucas).
+- Exposed APM model for inspection/modification (vy Leonidas Loucas).
+
 ## [3.3.0]
 
 - Exposed model to allow layer introspection.
