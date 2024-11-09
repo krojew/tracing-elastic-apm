@@ -136,7 +136,7 @@ impl ApmClient {
 
             let result = request.send().await;
             if let Err(error) = result {
-                eprintln!("Error sending batch to APM: {}", error);
+                tracing::warn!(%error, "Error sending batch to APM");
             }
         });
     }
