@@ -12,7 +12,7 @@ pub mod layer;
 pub mod model;
 mod visitor;
 
-/// Constructs a new telemetry layer for given APM configuration.
+/// Constructs a new telemetry layer for a given APM configuration.
 pub fn new_layer(service_name: String, config: Config) -> AnyResult<ApmLayer> {
     ApmLayer::new(config, service_name)
 }

@@ -1,7 +1,7 @@
 use std::time::{Duration, Instant, SystemTime, UNIX_EPOCH};
 
 use anyhow::Result as AnyResult;
-use rand::prelude::*;
+use rand::random;
 use serde_json::{json, Value};
 use tracing::{
     span::{Attributes, Record},
