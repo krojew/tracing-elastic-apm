@@ -2,7 +2,7 @@
 
 ## [4.0.0]
 
-- Updated `rewquest` and using `rustls` by default.
+- Updated `reqwest` and using `rustls` by default.
 
 ## [3.4.0]
 
