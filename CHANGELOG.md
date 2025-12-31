@@ -1,5 +1,9 @@
 # Changelog
 
+## [4.0.0]
+
+- Updated `rewquest` and using `rustls` by default.
+
 ## [3.4.0]
 
 - Optional `valuable` feature to allow populating context fields (by Leonidas
