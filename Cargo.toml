@@ -15,7 +15,7 @@ license = "MIT"
 base64 = "0.22"
 fxhash = "0.2"
 rand = "0.9"
-reqwest = { version = "0.12", default-features = false, features = [] }
+reqwest = "0.13"
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
 tokio = { version = "1", features = ["rt-multi-thread"] }
@@ -28,5 +28,4 @@ valuable = { version = "0.1.0", optional = true, features = ["derive"] }
 [features]
 default = ["default-tls"]
 default-tls = ["reqwest/default-tls"]
-rustls-tls = ["reqwest/rustls-tls"]
 valuable = ["dep:valuable"]
